@@ -18,13 +18,12 @@ export const SmallTitle = styled.h3(() => [
 export const DateText = styled.p(() => [
   css`
     font-size: 0.75rem;
-    color: gray;
+    color: lightgray;
   `,
 ])
 
 export const JustText = styled.p(() => [
   css`
     font-size: 1rem;
-    color: black;
   `,
 ])

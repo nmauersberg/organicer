@@ -21,7 +21,7 @@ textarea {
   border: 1px dashed gray;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
@@ -29,7 +29,7 @@ textarea {
     color: white;
     background: black;
   }
-}
+} */
 
 .center {
   min-height: 100vh;
