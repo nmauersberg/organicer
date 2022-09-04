@@ -31,7 +31,9 @@ export function AddJournalEntry() {
         value={content}
         onChange={ev => setContent(ev.target.value)}
       />
-      <SlideButton onClick={addEntry}>Speichern</SlideButton>
+      <SlideButton onClick={addEntry} disabled={content === ''}>
+        Speichern
+      </SlideButton>
     </>
   )
 }

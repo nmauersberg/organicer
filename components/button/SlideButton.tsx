@@ -6,6 +6,7 @@ import { mdiChevronRight } from '@mdi/js'
 type SlideButtonProps = {
   children: ReactElement | ReactElement[] | string
   onClick: () => void
+  disabled: boolean
 }
 
 export const SlideButton = (props: SlideButtonProps) => {
