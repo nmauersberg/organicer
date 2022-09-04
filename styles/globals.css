@@ -15,6 +15,12 @@ a {
   box-sizing: border-box;
 }
 
+textarea {
+  min-height: 4rem;
+  width: 100%;
+  border: 1px dashed gray;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
@@ -27,6 +33,7 @@ a {
 
 .center {
   min-height: 100vh;
+  min-width: 50vw;
   padding: 4rem 1rem;
   flex: 1;
   display: flex;

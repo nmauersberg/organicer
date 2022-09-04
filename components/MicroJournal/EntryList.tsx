@@ -1,16 +1,27 @@
-import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../dexie/db';
+import { useLiveQuery } from 'dexie-react-hooks'
+import { css, styled } from 'twin.macro'
+import { db } from '../../dexie/db'
+import { DateText, JustText } from '../text'
 
 export function EntryList() {
-  const entries = useLiveQuery(() => db.journal.toArray());
+  const entries = useLiveQuery(() => db.journal.toArray())
 
   return (
-    <ul>
-      {entries?.map((entry) => (
-        <li key={entry.id}>
-          {entry.date}, {entry.content}
-        </li>
+    <div>
+      {entries?.map(entry => (
+        <Entry key={entry.id}>
+          <DateText>
+            {new Date(entry.date).toLocaleDateString('de-DE')}
+          </DateText>
+          <JustText>{entry.content}</JustText>
+        </Entry>
       ))}
-    </ul>
-  );
+    </div>
+  )
 }
+
+export const Entry = styled.div(() => [
+  css`
+    margin: 0.5rem 0;
+  `,
+])

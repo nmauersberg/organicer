@@ -1,36 +1,37 @@
-import React, { useState } from 'react';
-import { db } from '../../dexie/db';
+import React, { useState } from 'react'
+import ReactTextareaAutosize from 'react-textarea-autosize'
+import { db } from '../../dexie/db'
+import { SlideButton } from '../button/SlideButton'
 
 export function AddJournalEntry() {
-  const [content, setContent] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [status, setStatus] = useState('');
+  const [content, setContent] = useState('')
+  const [date, setDate] = useState(new Date())
+  const [status, setStatus] = useState('')
 
   async function addEntry() {
     try {
       const id = await db.journal.add({
-        date: date.toDateString(),
+        date: date.toISOString(),
         content,
-      });
+      })
       setStatus(
-        `Entry of ${date.toDateString()} successfully added. Got id ${id}`
-      );
-      setContent('');
-      setDate(new Date());
+        `Entry of ${date.toISOString()} successfully added. Got id ${id}`,
+      )
+      setContent('')
+      setDate(new Date())
     } catch (error) {
-      setStatus(`Failed to add entry of ${date.toDateString()}: ${error}`);
+      setStatus(`Failed to add entry of ${date.toISOString()}: ${error}`)
     }
   }
 
   return (
     <>
-      <textarea
+      <ReactTextareaAutosize
+        placeholder="Schreib was du willst!"
         value={content}
-        onChange={(ev) => setContent(ev.target.value)}
-        style={{ width: '100%' }}
+        onChange={ev => setContent(ev.target.value)}
       />
-      <br />
-      <button onClick={addEntry}>Add</button>
+      <SlideButton onClick={addEntry}>Speichern</SlideButton>
     </>
-  );
+  )
 }
