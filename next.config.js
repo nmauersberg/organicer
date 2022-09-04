@@ -8,15 +8,15 @@ const withPWA = require('next-pwa')({
 const nextConfig = withPWA({
   reactStrictMode: true,
   swcMinify: true,
-  async rewrites() {
-    return [
-      // Rewrite everything to `pages/index`
-      {
-        source: '/:any*',
-        destination: '/',
-      },
-    ];
-  },
+  // async rewrites() {
+  //   return [
+  //     // Rewrite everything to `pages/index`
+  //     {
+  //       source: '/:any*',
+  //       destination: '/',
+  //     },
+  //   ];
+  // },
 });
 
 module.exports = nextConfig;

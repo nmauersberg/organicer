@@ -9,7 +9,7 @@ import {
 } from '../context/encryptStorage';
 
 // Initialize p2panda wasm code
-initWebAssembly().then(() => console.log('p2panda initialized'));
+initWebAssembly(); //.then(() => console.log('p2panda initialized'));
 
 type AppState = 'loading' | 'askPin' | 'initialized';
 

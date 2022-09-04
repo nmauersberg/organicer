@@ -2,6 +2,8 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import { KeyPair } from 'p2panda-js';
 import { useContext, useState } from 'react';
+import { AddJournalEntry } from '../components/MicroJournal/AddEntry';
+import { EntryList } from '../components/MicroJournal/EntryList';
 import { EncryptStorageContext } from '../context/encryptStorage';
 
 const Home: NextPage = () => {
@@ -24,6 +26,11 @@ const Home: NextPage = () => {
         {pubKey ? (
           <div>
             <p>You are signed is as {pubKey.substring(0, 10)}...</p>
+            <br />
+
+            <h2>Add an entry to your Journal:</h2>
+            <AddJournalEntry />
+            <EntryList />
           </div>
         ) : (
           <>

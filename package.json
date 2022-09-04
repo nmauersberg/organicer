@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "dexie": "^3.2.2",
+    "dexie-react-hooks": "^1.1.1",
     "encrypt-storage": "^2.12.1",
     "next": "12.2.5",
     "next-pwa": "^5.6.0",
