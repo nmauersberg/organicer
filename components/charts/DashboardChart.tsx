@@ -26,6 +26,7 @@ export const DashboardChart = () => {
     chart: {
       id: 'line',
     },
+    colors: ['#db5461'],
     xaxis: {
       type: 'datetime',
       labels: {
