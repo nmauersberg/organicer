@@ -44,7 +44,7 @@ export const SlideButton_ = styled.button(() => [
       transition: 0.2s;
       position: absolute;
       right: 5px;
-      top: 18px;
+      top: 17px;
       transition: transform 1;
     }
 
@@ -58,13 +58,14 @@ export const SlideButton_ = styled.button(() => [
 
     &::after {
       content: '';
-      background-color: #66f2d5;
+      background-color: #53a2be;
+      opacity: 0.75;
       width: 100%;
       z-index: -1;
       position: absolute;
       height: 100%;
-      top: 7px;
-      left: 7px;
+      top: 6px;
+      left: 6px;
     }
 
     &:hover i {

@@ -4,14 +4,19 @@ import { db } from '../../dexie/db'
 import { DateText, JustText } from '../text'
 
 export function EntryList() {
-  const entries = useLiveQuery(() => db.journal.toArray())
+  const entries = useLiveQuery(() =>
+    db.journal.toArray().then(entries => entries.reverse()),
+  )
 
   return (
     <div>
       {entries?.map(entry => (
         <Entry key={entry.id}>
           <DateText>
-            {new Date(entry.date).toLocaleDateString('de-DE')}
+            {new Date(entry.date).toLocaleString('de-DE', {
+              dateStyle: 'medium',
+              timeStyle: 'short',
+            })}
           </DateText>
           <JustText>{entry.content}</JustText>
         </Entry>
