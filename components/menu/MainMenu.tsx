@@ -66,7 +66,10 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
               <NavElement
                 key={el.id}
                 config={el.config}
-                onClick={() => setCurrentPage(el.id)}
+                onClick={() => {
+                  setCurrentPage(el.id)
+                  setMenuActive(false)
+                }}
               >
                 <Icon path={el.icon} size={0.75} color={'white'} />
                 {/* <LabelText size={0.2}>{el.label}</LabelText> */}
