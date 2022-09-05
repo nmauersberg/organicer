@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { KeyPair } from 'p2panda-js'
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, ReactElement } from 'react'
 import { PageContainer } from '../components/layout'
 import { MainMenu } from '../components/menu/MainMenu'
 import { AddJournalEntry } from '../components/MicroJournal/AddEntry'
@@ -14,6 +14,7 @@ const Home: NextPage = () => {
   const [privKey, setPrivKey] = useState<string | undefined>(
     encryptStorage?.getItem('privKey'),
   )
+  const [currentPage, setCurrentPage] = useState<Page>('dashboard')
   const pubKey = privKey ? new KeyPair(privKey).publicKey() : null
 
   return (
@@ -28,11 +29,7 @@ const Home: NextPage = () => {
         <Title>OrgaNicer</Title>
         {pubKey ? (
           <div>
-            {/* <p>You are signed is as {pubKey.substring(0, 10)}...</p> */}
-            <SmallTitle>Tagebuch</SmallTitle>
-            <AddJournalEntry />
-            <EntryList />
-            <MainMenu />
+            <PageContent page={currentPage} />
           </div>
         ) : (
           <>
@@ -49,9 +46,46 @@ const Home: NextPage = () => {
           </>
         )}
       </div>
-      <MainMenu />
+      <MainMenu setCurrentPage={setCurrentPage} />
     </PageContainer>
   )
+}
+
+export type Page = 'dashboard' | 'journal' | 'sport' | 'duty'
+
+type PageContentProps = {
+  page: Page
+}
+
+const PageContent = ({ page }: PageContentProps): ReactElement => {
+  switch (page) {
+    case 'dashboard':
+      return (
+        <>
+          <SmallTitle>Dashboard</SmallTitle>
+        </>
+      )
+    case 'journal':
+      return (
+        <>
+          <SmallTitle>Tagebuch</SmallTitle>
+          <AddJournalEntry />
+          <EntryList />
+        </>
+      )
+    case 'sport':
+      return (
+        <>
+          <SmallTitle>Sport</SmallTitle>
+        </>
+      )
+    case 'duty':
+      return (
+        <>
+          <SmallTitle>Aufgaben</SmallTitle>
+        </>
+      )
+  }
 }
 
 export default Home

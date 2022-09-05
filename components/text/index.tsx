@@ -22,8 +22,12 @@ export const DateText = styled.p(() => [
   `,
 ])
 
-export const JustText = styled.p(() => [
+type JustTextProps = {
+  size?: number
+}
+
+export const JustText = styled.p<JustTextProps>(({ size = 1 }) => [
   css`
-    font-size: 1rem;
+    font-size: ${size}rem;
   `,
 ])
