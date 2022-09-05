@@ -5,6 +5,7 @@ import tw, { css, theme, GlobalStyles as BaseStyles } from 'twin.macro'
 const customStyles = css({
   '*': {
     boxSizing: 'border-box',
+    '-webkit-tap-highlight-color': 'rgba(0,0,0,0)',
   },
   body: {
     WebkitTapHighlightColor: theme`colors.purple.500`,
