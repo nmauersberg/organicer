@@ -4,9 +4,9 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "organicer",
-  "short_name": "on",
-  "description": "oarganice your life",
+  "name": "OrgaNicer",
+  "short_name": "OrgaNicer",
+  "description": "OrgaNice your life",
   "icons": [
     {
       "src": "/icon-192x192.png",
