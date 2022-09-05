@@ -45,16 +45,9 @@ type MainMenuProps = {
 
 export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
   const [menuActive, setMenuActive] = useState(false)
+
   return (
-    <MainMenu_
-      active={menuActive}
-      onMouseEnter={() => setMenuActive(true)}
-      onMouseLeave={() =>
-        setTimeout(() => {
-          setMenuActive(false)
-        }, 500)
-      }
-    >
+    <MainMenu_ active={menuActive} onClick={() => setMenuActive(!menuActive)}>
       {!menuActive ? (
         <IconContainer>
           <Icon path={mdiApps} size={2} color={'white'} />
@@ -68,7 +61,7 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
                 config={el.config}
                 onClick={() => {
                   setCurrentPage(el.id)
-                  // setMenuActive(false)
+                  setMenuActive(false)
                 }}
               >
                 <Icon path={el.icon} size={0.75} color={'white'} />
@@ -83,54 +76,54 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
 }
 
 type MainMenuInternalProps = {
-  active?: boolean
+  active: boolean
 }
 
-export const MainMenu_ = styled.div<MainMenuInternalProps>(
-  ({ active = false }) => {
-    const [isInitial, setIsInital] = useState(true)
-    const [animation, setAnimation] = useState<string | null>(null)
-    useEffect(() => {
-      if (!isInitial) {
-        const newAnimation = active
-          ? 'animation: grow 0.5s ease forwards;'
-          : 'animation: shrink 0.5s ease forwards;'
-        setAnimation(newAnimation)
-      }
-      setIsInital(false)
-    }, [active])
+export const MainMenu_ = styled.div<MainMenuInternalProps>(({ active }) => {
+  const [isInitial, setIsInital] = useState(true)
+  const [animation, setAnimation] = useState<string | null>(null)
 
-    return [
-      css`
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        height: 5rem;
-        width: 5rem;
-        background: #db5461;
-        border-top-left-radius: 100%;
-        ${animation && animation}
-        transform-origin: bottom right;
-        @keyframes grow {
-          from {
-            transform: scale(1);
-          }
-          to {
-            transform: scale(5);
-          }
+  useEffect(() => {
+    if (!isInitial) {
+      const newAnimation = active
+        ? 'animation: grow 0.5s ease forwards;'
+        : 'animation: shrink 0.5s ease forwards;'
+      setAnimation(newAnimation)
+    }
+    setIsInital(false)
+  }, [active])
+
+  return [
+    css`
+      position: fixed;
+      cursor: pointer;
+      bottom: 0;
+      right: 0;
+      height: 5rem;
+      width: 5rem;
+      background: #db5461;
+      border-top-left-radius: 100%;
+      ${animation && animation}
+      transform-origin: bottom right;
+      @keyframes grow {
+        from {
+          transform: scale(1);
         }
-        @keyframes shrink {
-          from {
-            transform: scale(5);
-          }
-          to {
-            transform: scale(1);
-          }
+        to {
+          transform: scale(5);
         }
-      `,
-    ]
-  },
-)
+      }
+      @keyframes shrink {
+        from {
+          transform: scale(5);
+        }
+        to {
+          transform: scale(1);
+        }
+      }
+    `,
+  ]
+})
 
 const IconContainer = styled.div(() => [
   css`

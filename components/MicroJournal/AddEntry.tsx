@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import ReactTextareaAutosize from 'react-textarea-autosize'
+import { css, styled } from 'twin.macro'
 import { db } from '../../dexie/db'
 import { SlideButton } from '../button/SlideButton'
 
@@ -25,7 +26,7 @@ export function AddJournalEntry() {
   }
 
   return (
-    <>
+    <Frame>
       <ReactTextareaAutosize
         placeholder="Schreib was du willst!"
         value={content}
@@ -34,6 +35,12 @@ export function AddJournalEntry() {
       <SlideButton onClick={addEntry} disabled={content === ''}>
         Speichern
       </SlideButton>
-    </>
+    </Frame>
   )
 }
+
+const Frame = styled.div(() => [
+  css`
+    margin-top: 2rem;
+  `,
+])

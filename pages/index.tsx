@@ -1,7 +1,9 @@
+import { FadeIn } from 'anima-react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { KeyPair } from 'p2panda-js'
 import { useContext, useState, useEffect, ReactElement } from 'react'
+import tw, { css, styled } from 'twin.macro'
 import { PageContainer } from '../components/layout'
 import { MainMenu } from '../components/menu/MainMenu'
 import { AddJournalEntry } from '../components/MicroJournal/AddEntry'
@@ -25,12 +27,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className={'center'}>
-        <Title>OrgaNicer</Title>
+      <PageTitle>OrgaNicer</PageTitle>
+
+      <Frame>
         {pubKey ? (
-          <div>
-            <PageContent page={currentPage} />
-          </div>
+          <PageContent page={currentPage} key={currentPage} />
         ) : (
           <>
             <p>Generate your Keys!</p>
@@ -45,7 +46,7 @@ const Home: NextPage = () => {
             </button>
           </>
         )}
-      </div>
+      </Frame>
       <MainMenu setCurrentPage={setCurrentPage} />
     </PageContainer>
   )
@@ -61,31 +62,75 @@ const PageContent = ({ page }: PageContentProps): ReactElement => {
   switch (page) {
     case 'dashboard':
       return (
-        <>
+        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <SmallTitle>Dashboard</SmallTitle>
-        </>
+        </FadeIn>
       )
     case 'journal':
       return (
-        <>
-          <SmallTitle>Tagebuch</SmallTitle>
-          <AddJournalEntry />
-          <EntryList />
-        </>
+        <JustifyBetween>
+          <Journal>
+            <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+              <SmallTitle>Tagebuch</SmallTitle>
+              <EntryList />
+            </FadeIn>
+          </Journal>
+          <FadeIn orientation="up" duration={0.5} delay={0.25} distance={30}>
+            <AddJournalEntry />
+          </FadeIn>
+        </JustifyBetween>
       )
     case 'sport':
       return (
-        <>
+        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <SmallTitle>Sport</SmallTitle>
-        </>
+        </FadeIn>
       )
     case 'duty':
       return (
-        <>
+        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <SmallTitle>Aufgaben</SmallTitle>
-        </>
+        </FadeIn>
       )
   }
 }
 
 export default Home
+
+const Frame = styled.div(() => [
+  css`
+    height: 100vh;
+    min-width: 50vw;
+    padding: 6rem 1rem 2rem 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden;
+  `,
+])
+
+const Journal = styled.div(() => [
+  css`
+    overflow-y: auto;
+    height: 100%;
+  `,
+])
+
+const PageTitle = styled.h2(() => [
+  css`
+    font-weight: 600;
+    font-size: 2rem;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    top: 1.5rem;
+  `,
+])
+
+export const JustifyBetween = styled.div(() => [
+  tw`flex flex-col justify-between`,
+  css`
+    height: calc(100vh - 8rem);
+  `,
+])

@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.3.0",
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
+    "anima-react": "^0.0.7",
     "dexie": "^3.2.2",
     "dexie-react-hooks": "^1.1.1",
     "encrypt-storage": "^2.12.1",
