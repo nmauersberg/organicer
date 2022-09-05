@@ -27,6 +27,6 @@ export function EntryList() {
 
 export const Entry = styled.div(() => [
   css`
-    margin: 0.5rem 0.1rem 0.5rem 0;
+    margin: 0.5rem 0.25rem 0.5rem 0;
   `,
 ])

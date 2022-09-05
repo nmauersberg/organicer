@@ -5,32 +5,6 @@ import { useWindowDimensions } from '../../hooks/useWindowDimensions'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from '../../dexie/db'
 
-const options: ApexOptions = {
-  chart: {
-    id: 'line',
-  },
-  xaxis: {
-    type: 'datetime',
-    labels: {
-      datetimeFormatter: {
-        year: 'yyyy',
-        month: "MMM 'yy",
-        day: 'dd MMM',
-        hour: 'HH:mm',
-      },
-    },
-  },
-  yaxis: {
-    min: 0,
-    labels: {
-      formatter: val => Math.round(val).toString(),
-    },
-  },
-  stroke: {
-    curve: 'smooth',
-  },
-}
-
 export const DashboardChart = () => {
   const { width } = useWindowDimensions()
   const entries = useLiveQuery(() => db.journal.toArray())
@@ -46,6 +20,35 @@ export const DashboardChart = () => {
     y: dates[k],
   }))
 
+  const max = Math.max(...data.map(o => o.y))
+
+  const options: ApexOptions = {
+    chart: {
+      id: 'line',
+    },
+    xaxis: {
+      type: 'datetime',
+      labels: {
+        datetimeFormatter: {
+          year: 'yyyy',
+          month: "MMM 'yy",
+          day: 'dd MMM',
+          hour: 'HH:mm',
+        },
+      },
+    },
+    yaxis: {
+      min: 0,
+      max: max + 1,
+      labels: {
+        formatter: val => Math.round(val).toString(),
+      },
+    },
+    stroke: {
+      curve: 'smooth',
+    },
+  }
+
   const series = [
     {
       name: 'Tagebuch Einträge',
@@ -58,7 +61,13 @@ export const DashboardChart = () => {
       options={options}
       series={series}
       type="line"
-      width={width > 850 ? '800' : (width - 50).toString()}
+      width={
+        width > 850
+          ? '800'
+          : width > 500
+          ? (width - 50).toString()
+          : (width - 20).toString()
+      }
     />
   )
 }
