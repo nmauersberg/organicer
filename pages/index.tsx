@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { KeyPair } from 'p2panda-js'
 import { useContext, useState, useEffect, ReactElement } from 'react'
 import tw, { css, styled } from 'twin.macro'
+import { DashboardChart } from '../components/charts/DashboardChart'
 import { PageContainer } from '../components/layout'
 import { MainMenu } from '../components/menu/MainMenu'
 import { AddJournalEntry } from '../components/MicroJournal/AddEntry'
@@ -68,6 +69,7 @@ const PageContent = ({ page }: PageContentProps): ReactElement => {
       return (
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <SmallTitle>Dashboard</SmallTitle>
+          <DashboardChart />
         </FadeIn>
       )
     case 'journal':
