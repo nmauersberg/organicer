@@ -27,7 +27,11 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <PageTitle>OrgaNicer</PageTitle>
+      <PageTitle>
+        <FadeIn orientation="up" duration={0.5} distance={10}>
+          OrgaNicer
+        </FadeIn>
+      </PageTitle>
 
       <Frame>
         {pubKey ? (

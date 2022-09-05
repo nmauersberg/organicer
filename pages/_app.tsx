@@ -11,6 +11,7 @@ import {
 import GlobalStyles from '../styles/GlobalStyles'
 import { CacheProvider } from '@emotion/react'
 import { cache } from '@emotion/css'
+import { FadeIn } from 'anima-react'
 
 // Initialize p2panda wasm code
 initWebAssembly() //.then(() => console.log('p2panda initialized'));
@@ -58,7 +59,9 @@ const InitApp = ({ appProps: { Component, pageProps } }: InitAppProps) => {
     case 'loading':
       return (
         <div className={'center'}>
-          <h2>Loading...</h2>
+          <FadeIn orientation="up" duration={0.5} delay={0.1}>
+            <h2>Loading...</h2>
+          </FadeIn>
         </div>
       )
     case 'askPin':
@@ -84,20 +87,22 @@ const EnterPin = ({ pinSaved }: EnterPinProps) => {
 
   return (
     <div className={'center'}>
-      <h2>Please enter a PIN to access your encrypted storage:</h2>
-      <input
-        type="number"
-        placeholder="Encryption PIN"
-        onChange={e => setPin(e.target.value)}
-      />
-      <button
-        disabled={!pin}
-        onClick={() => {
-          savePin()
-        }}
-      >
-        Save
-      </button>
+      <FadeIn orientation="up" duration={0.5} delay={0.1}>
+        <h2>Please enter a PIN to access your encrypted storage:</h2>
+        <input
+          type="number"
+          placeholder="Encryption PIN"
+          onChange={e => setPin(e.target.value)}
+        />
+        <button
+          disabled={!pin}
+          onClick={() => {
+            savePin()
+          }}
+        >
+          Save
+        </button>
+      </FadeIn>
     </div>
   )
 }
