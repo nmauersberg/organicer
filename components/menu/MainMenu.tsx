@@ -68,7 +68,7 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
                 config={el.config}
                 onClick={() => {
                   setCurrentPage(el.id)
-                  setMenuActive(false)
+                  // setMenuActive(false)
                 }}
               >
                 <Icon path={el.icon} size={0.75} color={'white'} />
