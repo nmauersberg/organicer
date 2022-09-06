@@ -13,7 +13,11 @@ export const DashboardChart = () => {
 
   const dates = getDates(entries.map(entry => new Date(entry.date)))
 
-  entries.forEach(e => dates[new Date(e.date).toDateString()]++)
+  entries.forEach(e => {
+    const entryCount = dates[new Date(e.date).toDateString()]
+    dates[new Date(e.date).toDateString()] =
+      typeof entryCount === 'number' ? entryCount + 1 : 1
+  })
 
   const data = Object.keys(dates).map(k => ({
     x: new Date(k).getTime(),
