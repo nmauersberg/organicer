@@ -1,24 +1,32 @@
-import { FadeIn } from 'anima-react'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import { KeyPair } from 'p2panda-js'
-import { useContext, useState, useEffect, ReactElement } from 'react'
-import tw, { css, styled } from 'twin.macro'
-import { DashboardChart } from '../components/charts/DashboardChart'
-import { PageContainer } from '../components/layout'
-import { MainMenu } from '../components/menu/MainMenu'
-import { AddJournalEntry } from '../components/MicroJournal/AddEntry'
-import { EntryList } from '../components/MicroJournal/EntryList'
-import { SmallTitle, Title } from '../components/text'
-import { EncryptStorageContext } from '../context/encryptStorage'
+import { FadeIn } from 'anima-react';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { KeyPair } from 'p2panda-js';
+import { useContext, useState, useEffect, ReactElement } from 'react';
+import tw, { css, styled } from 'twin.macro';
+import { SlideButton } from '../components/button/SlideButton';
+import { DashboardChart } from '../components/charts/DashboardChart';
+import { PageContainer } from '../components/layout';
+import { MainMenu, Page, pages } from '../components/menu/MainMenu';
+import { AddJournalEntry } from '../components/MicroJournal/AddEntry';
+import { EntryList } from '../components/MicroJournal/EntryList';
+import { SmallTitle, Title } from '../components/text';
+import { EncryptStorageContext } from '../context/encryptStorage';
+
+import { mdiAccountHeart } from '@mdi/js';
+import Icon from '@mdi/react';
+import Image from 'next/image';
+import { PageLogo } from '../components/layout/PageLogo';
+import { PageUser } from '../components/layout/PageUser';
+import { Settings } from '../components/pages/Settings';
 
 const Home: NextPage = () => {
-  const [encryptStorage] = useContext(EncryptStorageContext)
+  const [encryptStorage] = useContext(EncryptStorageContext);
   const [privKey, setPrivKey] = useState<string | undefined>(
     encryptStorage?.getItem('privKey'),
-  )
-  const [currentPage, setCurrentPage] = useState<Page>('dashboard')
-  const pubKey = privKey ? new KeyPair(privKey).publicKey() : null
+  );
+  const [currentPage, setCurrentPage] = useState<Page>(pages[0]);
+  const pubKey = privKey ? new KeyPair(privKey).publicKey() : null;
 
   return (
     <PageContainer>
@@ -29,22 +37,28 @@ const Home: NextPage = () => {
       </Head>
 
       <PageTitle>
+        <PageLogo onClick={() => setCurrentPage(pages[0])} />
         <FadeIn orientation="up" duration={0.5} distance={10}>
-          OrgaNicer
+          {currentPage.label}
         </FadeIn>
+        <PageUser
+          showSettings={() =>
+            setCurrentPage(pages.find(p => p.id === 'settings') || pages[0])
+          }
+        />
       </PageTitle>
 
       <Frame>
         {pubKey ? (
-          <PageContent page={currentPage} key={currentPage} />
+          <PageContent page={currentPage} key={currentPage.id} />
         ) : (
           <>
             <p>Generate your Keys!</p>
             <button
               onClick={() => {
-                const keyPair = new KeyPair()
-                encryptStorage?.setItem('privKey', keyPair.privateKey())
-                setPrivKey(keyPair.privateKey())
+                const keyPair = new KeyPair();
+                encryptStorage?.setItem('privKey', keyPair.privateKey());
+                setPrivKey(keyPair.privateKey());
               }}
             >
               Generate Keys
@@ -54,30 +68,42 @@ const Home: NextPage = () => {
       </Frame>
       <MainMenu setCurrentPage={setCurrentPage} />
     </PageContainer>
-  )
-}
-
-export type Page = 'dashboard' | 'journal' | 'sport' | 'duty'
+  );
+};
 
 type PageContentProps = {
-  page: Page
-}
+  page: Page;
+};
 
 const PageContent = ({ page }: PageContentProps): ReactElement => {
-  switch (page) {
+  switch (page.id) {
     case 'dashboard':
       return (
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-          <SmallTitle>Dashboard</SmallTitle>
+          <>
+            {page.description !== '' && (
+              <SmallTitle>{page.description}</SmallTitle>
+            )}
+          </>
           <DashboardChart />
         </FadeIn>
-      )
+      );
+    case 'settings':
+      return (
+        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+          <Settings />
+        </FadeIn>
+      );
     case 'journal':
       return (
         <JustifyBetween>
           <Journal>
             <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-              <SmallTitle>Tagebuch</SmallTitle>
+              <>
+                {page.description !== '' && (
+                  <SmallTitle>{page.description}</SmallTitle>
+                )}
+              </>
               <EntryList />
             </FadeIn>
           </Journal>
@@ -85,23 +111,31 @@ const PageContent = ({ page }: PageContentProps): ReactElement => {
             <AddJournalEntry />
           </FadeIn>
         </JustifyBetween>
-      )
+      );
     case 'sport':
       return (
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-          <SmallTitle>Sport</SmallTitle>
+          <>
+            {page.description !== '' && (
+              <SmallTitle>{page.description}</SmallTitle>
+            )}
+          </>
         </FadeIn>
-      )
+      );
     case 'duty':
       return (
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-          <SmallTitle>Aufgaben</SmallTitle>
+          <>
+            {page.description !== '' && (
+              <SmallTitle>{page.description}</SmallTitle>
+            )}
+          </>
         </FadeIn>
-      )
+      );
   }
-}
+};
 
-export default Home
+export default Home;
 
 const Frame = styled.div(() => [
   css`
@@ -114,14 +148,14 @@ const Frame = styled.div(() => [
     align-items: center;
     overflow: hidden;
   `,
-])
+]);
 
 const Journal = styled.div(() => [
   css`
     overflow-y: auto;
     height: 100%;
   `,
-])
+]);
 
 const PageTitle = styled.h2(() => [
   css`
@@ -131,12 +165,16 @@ const PageTitle = styled.h2(() => [
     text-align: center;
     position: absolute;
     top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
   `,
-])
+]);
 
 export const JustifyBetween = styled.div(() => [
   tw`flex flex-col justify-between`,
   css`
     height: calc(100vh - 8rem);
   `,
-])
+]);

@@ -1,30 +1,30 @@
-import dynamic from 'next/dynamic'
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
-import { ApexOptions } from 'apexcharts'
-import { useWindowDimensions } from '../../hooks/useWindowDimensions'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { db } from '../../dexie/db'
+import dynamic from 'next/dynamic';
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import { ApexOptions } from 'apexcharts';
+import { useWindowDimensions } from '../../hooks/useWindowDimensions';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { db } from '../../dexie/db';
 
 export const DashboardChart = () => {
-  const { width } = useWindowDimensions()
-  const entries = useLiveQuery(() => db.journal.toArray())
+  const { width } = useWindowDimensions();
+  const entries = useLiveQuery(() => db.journal.toArray());
 
-  if (!entries) return <></>
+  if (!entries || entries.length === 0) return <></>;
 
-  const dates = getDates(entries.map(entry => new Date(entry.date)))
+  const dates = getDates(entries.map(entry => new Date(entry.date)));
 
   entries.forEach(e => {
-    const entryCount = dates[new Date(e.date).toDateString()]
+    const entryCount = dates[new Date(e.date).toDateString()];
     dates[new Date(e.date).toDateString()] =
-      typeof entryCount === 'number' ? entryCount + 1 : 1
-  })
+      typeof entryCount === 'number' ? entryCount + 1 : 1;
+  });
 
   const data = Object.keys(dates).map(k => ({
     x: new Date(k).getTime(),
     y: dates[k],
-  }))
+  }));
 
-  const max = Math.max(...data.map(o => o.y))
+  const max = Math.max(...data.map(o => o.y));
 
   const options: ApexOptions = {
     chart: {
@@ -32,14 +32,17 @@ export const DashboardChart = () => {
     },
     colors: ['#db5461'],
     xaxis: {
-      type: 'datetime',
+      type: 'category',
       labels: {
-        datetimeFormatter: {
-          year: 'yyyy',
-          month: "MMM 'yy",
-          day: 'dd MMM',
-          hour: 'HH:mm',
-        },
+        formatter: val =>
+          new Date(val).toLocaleString('de-DE', { weekday: 'long' }),
+        // format: 'dddd',
+        // datetimeFormatter: {
+        //   year: 'yyyy',
+        //   month: "MMM 'yy",
+        //   day: 'dd MMM',
+        //   hour: 'HH:mm',
+        // },
       },
     },
     yaxis: {
@@ -52,14 +55,14 @@ export const DashboardChart = () => {
     stroke: {
       curve: 'smooth',
     },
-  }
+  };
 
   const series = [
     {
       name: 'Tagebuch Einträge',
       data: data,
     },
-  ]
+  ];
 
   return (
     <Chart
@@ -74,24 +77,24 @@ export const DashboardChart = () => {
           : (width - 20).toString()
       }
     />
-  )
-}
+  );
+};
 
 const getDates = (dates: Date[]) => {
-  const min = dates.reduce((a, b) => (a < b ? a : b))
-  const max = dates.reduce((a, b) => (a > b ? a : b))
-  return getDatesInRange(min, max)
-}
+  const min = dates.reduce((a, b) => (a < b ? a : b));
+  const max = dates.reduce((a, b) => (a > b ? a : b));
+  return getDatesInRange(min, max);
+};
 
 const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const date = new Date(startDate.getTime())
+  const date = new Date(startDate.getTime());
 
-  const dates: { [key: string]: number } = {}
+  const dates: { [key: string]: number } = {};
 
   while (date <= endDate) {
-    dates[new Date(date).toDateString()] = 0
-    date.setDate(date.getDate() + 1)
+    dates[new Date(date).toDateString()] = 0;
+    date.setDate(date.getDate() + 1);
   }
 
-  return dates
-}
+  return dates;
+};

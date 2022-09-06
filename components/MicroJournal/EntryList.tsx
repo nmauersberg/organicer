@@ -28,5 +28,6 @@ export function EntryList() {
 export const Entry = styled.div(() => [
   css`
     margin: 0.5rem 0.25rem 0.5rem 0;
+    white-space: pre-wrap;
   `,
 ])

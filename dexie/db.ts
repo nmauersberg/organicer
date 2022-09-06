@@ -1,20 +1,20 @@
-import Dexie, { Table } from 'dexie';
+import Dexie, { Table } from 'dexie'
 
-export interface Entry {
-  id?: number;
-  date: string;
-  content: string;
+export interface JournalEntry {
+  id?: number
+  date: string
+  content: string
 }
 
 export class ExtendedDexie extends Dexie {
-  journal!: Table<Entry>;
+  journal!: Table<JournalEntry>
 
   constructor() {
-    super('microJournal');
+    super('microJournal')
     this.version(1).stores({
       journal: '++id, date, content',
-    });
+    })
   }
 }
 
-export const db = new ExtendedDexie();
+export const db = new ExtendedDexie()

@@ -1,50 +1,71 @@
 import {
   mdiApps,
   mdiBookOpenVariant,
+  mdiCog,
   mdiCookieCheckOutline,
   mdiHomeCircleOutline,
   mdiRunFast,
-} from '@mdi/js'
-import Icon from '@mdi/react'
-import { SetStateAction, useEffect, useState } from 'react'
-import { css, styled } from 'twin.macro'
-import { Page } from '../../pages'
+} from '@mdi/js';
+import Icon from '@mdi/react';
+import { SetStateAction, useEffect, useState } from 'react';
+import { css, styled } from 'twin.macro';
 
-type NavEl = { id: Page; icon: string; label: string; config: NavElConfig }
+export type PageId = 'dashboard' | 'journal' | 'sport' | 'duty' | 'settings';
 
-const navElements: NavEl[] = [
+export type Page = {
+  id: PageId;
+  icon: string;
+  label: string;
+  config: NavElConfig;
+  description: string;
+};
+
+export const pages: Page[] = [
   {
     id: 'dashboard',
     icon: mdiHomeCircleOutline,
-    label: 'Dashboard',
+    label: 'OrgaNicer',
     config: { rotate: 0, bottom: 0.2, right: 0.2, fadeIn: 0.9 },
+    description: '',
+  },
+  {
+    id: 'settings',
+    icon: mdiCog,
+    label: 'Einstellungen',
+    config: { rotate: 0, bottom: 0.2, right: 0.2, fadeIn: 0.9 },
+    description: '',
   },
   {
     id: 'sport',
     icon: mdiRunFast,
     label: 'Sport',
     config: { rotate: -80, bottom: 0.75, right: 3, fadeIn: 1 },
+    description: '',
   },
   {
     id: 'journal',
     icon: mdiBookOpenVariant,
     label: 'Tagebuch',
     config: { rotate: -45, bottom: 2.25, right: 2.25, fadeIn: 1.1 },
+    description: '',
   },
   {
     id: 'duty',
     icon: mdiCookieCheckOutline,
     label: 'Aufgaben',
     config: { rotate: -30, bottom: 3.25, right: 0.85, fadeIn: 1.2 },
+    description: '',
   },
-]
+];
 
 type MainMenuProps = {
-  setCurrentPage: React.Dispatch<SetStateAction<Page>>
-}
+  setCurrentPage: React.Dispatch<SetStateAction<Page>>;
+};
 
 export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
-  const [menuActive, setMenuActive] = useState(false)
+  const [menuActive, setMenuActive] = useState(false);
+  const mainMenuItems: PageId[] = ['dashboard', 'journal', 'sport', 'duty'];
+  const pagesOfMainMenu = pages.filter(p => mainMenuItems.includes(p.id));
 
   return (
     <MainMenu_ active={menuActive} onClick={() => setMenuActive(!menuActive)}>
@@ -54,44 +75,44 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
         </IconContainer>
       ) : (
         <NavBarContainer>
-          {navElements.map(el => {
+          {pagesOfMainMenu.map(el => {
             return (
               <NavElement
                 key={el.id}
                 config={el.config}
                 onClick={() => {
-                  setCurrentPage(el.id)
-                  setMenuActive(false)
+                  setCurrentPage(el);
+                  setMenuActive(false);
                 }}
               >
                 <Icon path={el.icon} size={0.75} color={'white'} />
                 {/* <LabelText size={0.2}>{el.label}</LabelText> */}
               </NavElement>
-            )
+            );
           })}
         </NavBarContainer>
       )}
     </MainMenu_>
-  )
-}
+  );
+};
 
 type MainMenuInternalProps = {
-  active: boolean
-}
+  active: boolean;
+};
 
 export const MainMenu_ = styled.div<MainMenuInternalProps>(({ active }) => {
-  const [isInitial, setIsInital] = useState(true)
-  const [animation, setAnimation] = useState<string | null>(null)
+  const [isInitial, setIsInital] = useState(true);
+  const [animation, setAnimation] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isInitial) {
       const newAnimation = active
         ? 'animation: grow 0.5s ease forwards;'
-        : 'animation: shrink 0.5s ease forwards;'
-      setAnimation(newAnimation)
+        : 'animation: shrink 0.5s ease forwards;';
+      setAnimation(newAnimation);
     }
-    setIsInital(false)
-  }, [active])
+    setIsInital(false);
+  }, [active]);
 
   return [
     css`
@@ -122,8 +143,8 @@ export const MainMenu_ = styled.div<MainMenuInternalProps>(({ active }) => {
         }
       }
     `,
-  ]
-})
+  ];
+});
 
 const IconContainer = styled.div(() => [
   css`
@@ -143,7 +164,7 @@ const IconContainer = styled.div(() => [
       }
     }
   `,
-])
+]);
 
 const NavBarContainer = styled.div(() => [
   css`
@@ -151,18 +172,18 @@ const NavBarContainer = styled.div(() => [
     bottom: 0rem;
     right: 0rem;
   `,
-])
+]);
 
 type NavElConfig = {
-  rotate: number
-  bottom: number
-  right: number
-  fadeIn: number
-}
+  rotate: number;
+  bottom: number;
+  right: number;
+  fadeIn: number;
+};
 
 type NavElementProps = {
-  config: NavElConfig
-}
+  config: NavElConfig;
+};
 
 const NavElement = styled.div<NavElementProps>(({ config }) => [
   css`
@@ -184,11 +205,11 @@ const NavElement = styled.div<NavElementProps>(({ config }) => [
       }
     }
   `,
-])
+]);
 
 type LabelTextProps = {
-  size?: number
-}
+  size?: number;
+};
 
 const LabelText = styled.p<LabelTextProps>(({ size = 1 }) => [
   css`
@@ -196,4 +217,4 @@ const LabelText = styled.p<LabelTextProps>(({ size = 1 }) => [
     color: white;
     text-align: center;
   `,
-])
+]);
