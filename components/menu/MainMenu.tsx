@@ -7,10 +7,11 @@ import {
   mdiRunFast,
 } from '@mdi/js';
 import Icon from '@mdi/react';
-import { SetStateAction, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { css, styled } from 'twin.macro';
 
-export type PageId = 'dashboard' | 'journal' | 'sport' | 'duty' | 'settings';
+export type PageId = '/' | 'tagebuch' | 'sport' | 'aufgaben' | 'einstellungen';
 
 export type Page = {
   id: PageId;
@@ -22,14 +23,14 @@ export type Page = {
 
 export const pages: Page[] = [
   {
-    id: 'dashboard',
+    id: '/',
     icon: mdiHomeCircleOutline,
     label: 'OrgaNicer',
     config: { rotate: 0, bottom: 0.2, right: 0.2, fadeIn: 0.9 },
     description: '',
   },
   {
-    id: 'settings',
+    id: 'einstellungen',
     icon: mdiCog,
     label: 'Einstellungen',
     config: { rotate: 0, bottom: 0.2, right: 0.2, fadeIn: 0.9 },
@@ -43,14 +44,14 @@ export const pages: Page[] = [
     description: '',
   },
   {
-    id: 'journal',
+    id: 'tagebuch',
     icon: mdiBookOpenVariant,
     label: 'Tagebuch',
     config: { rotate: -45, bottom: 2.25, right: 2.25, fadeIn: 1.1 },
     description: '',
   },
   {
-    id: 'duty',
+    id: 'aufgaben',
     icon: mdiCookieCheckOutline,
     label: 'Aufgaben',
     config: { rotate: -30, bottom: 3.25, right: 0.85, fadeIn: 1.2 },
@@ -58,14 +59,11 @@ export const pages: Page[] = [
   },
 ];
 
-type MainMenuProps = {
-  setCurrentPage: React.Dispatch<SetStateAction<Page>>;
-};
-
-export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
+export const MainMenu = () => {
   const [menuActive, setMenuActive] = useState(false);
-  const mainMenuItems: PageId[] = ['dashboard', 'journal', 'sport', 'duty'];
+  const mainMenuItems: PageId[] = ['/', 'tagebuch', 'sport', 'aufgaben'];
   const pagesOfMainMenu = pages.filter(p => mainMenuItems.includes(p.id));
+  const router = useRouter();
 
   return (
     <MainMenu_ active={menuActive} onClick={() => setMenuActive(!menuActive)}>
@@ -81,7 +79,7 @@ export const MainMenu = ({ setCurrentPage }: MainMenuProps) => {
                 key={el.id}
                 config={el.config}
                 onClick={() => {
-                  setCurrentPage(el);
+                  router.push(el.id);
                   setMenuActive(false);
                 }}
               >

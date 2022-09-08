@@ -1,9 +1,13 @@
-import { importDB, exportDB } from 'dexie-export-import';
+import { importDB, exportDB, ImportOptions } from 'dexie-export-import';
 import { ExtendedDexie } from './db';
 
 //
 // Import from Blob or File to Dexie instance:
 //
+
+const importOptions: ImportOptions = {
+  overwriteValues: true,
+};
 
 export const importDexieDb = async (blob: Blob, pubKey: string | null) => {
   if (pubKey) {
@@ -13,7 +17,8 @@ export const importDexieDb = async (blob: Blob, pubKey: string | null) => {
       if (e && e.target && typeof e.target.result == 'string') {
         const json = JSON.parse(e.target.result);
         json.data.databaseName = pubKey;
-        await importDB(new Blob([JSON.stringify(json, null, 2)]));
+        const updatedBlob = new Blob([JSON.stringify(json, null, 2)]);
+        await importDB(updatedBlob, importOptions);
       }
     };
 

@@ -32,6 +32,7 @@ export function AddJournalEntry() {
         placeholder="Schreib was du willst!"
         value={content}
         onChange={ev => setContent(ev.target.value)}
+        maxRows={12}
       />
       <SlideButton onClick={addEntry} disabled={content === ''}>
         Speichern
