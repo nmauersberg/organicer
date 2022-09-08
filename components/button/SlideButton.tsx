@@ -1,13 +1,13 @@
-import { ReactElement } from 'react'
-import { css, styled } from 'twin.macro'
-import Icon from '@mdi/react'
-import { mdiChevronRight } from '@mdi/js'
+import { ReactElement } from 'react';
+import { css, styled } from 'twin.macro';
+import Icon from '@mdi/react';
+import { mdiChevronRight } from '@mdi/js';
 
 type SlideButtonProps = {
-  children: ReactElement | ReactElement[] | string
-  onClick: () => void
-  disabled?: boolean
-}
+  children: ReactElement | ReactElement[] | string;
+  onClick: () => void;
+  disabled?: boolean;
+};
 
 export const SlideButton = (props: SlideButtonProps) => {
   return (
@@ -22,10 +22,10 @@ export const SlideButton = (props: SlideButtonProps) => {
         />
       </i>
     </SlideButton_>
-  )
-}
+  );
+};
 
-export const SlideButton_ = styled.button(() => [
+const SlideButton_ = styled.button(() => [
   css`
     font-size: 20px;
     font-weight: 200;
@@ -73,4 +73,4 @@ export const SlideButton_ = styled.button(() => [
       transform: translateX(-6px);
     }
   `,
-])
+]);

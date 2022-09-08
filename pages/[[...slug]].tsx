@@ -9,7 +9,7 @@ import { MainMenu, Page, PageId, pages } from '../components/menu/MainMenu';
 import { EncryptStorageContext } from '../context/encryptStorage';
 import { PageLogo } from '../components/layout/PageLogo';
 import { PageUser } from '../components/layout/PageUser';
-import { Settings } from '../components/pages/Settings';
+import { Settings } from '../components/views/Settings';
 import { KeyPairLogin } from '../components/views/KeyPairLogin';
 import { Journal } from '../components/views/Journal';
 import { Dashboard } from '../components/views/Dashboard';

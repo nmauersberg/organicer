@@ -6,13 +6,14 @@ import {
   useRef,
   useState,
 } from 'react';
+import toast from 'react-hot-toast';
 import { EncryptStorageContext } from '../../context/encryptStorage';
 import { useDexieDb } from '../../dexie/db';
 import { exportDexieDb, importDexieDb } from '../../dexie/importExport';
 import { SlideButton } from '../button/SlideButton';
 import { SmallTitle } from '../text';
 
-const ImportExport = (): ReactElement => {
+const ImportExport = ({ back }: { back: () => void }): ReactElement => {
   const [db] = useDexieDb();
   const [file, setFile] = useState();
   const [encryptStorage] = useContext(EncryptStorageContext);
@@ -59,11 +60,24 @@ const ImportExport = (): ReactElement => {
       {file && (
         <>
           <SmallTitle>Backup importieren:</SmallTitle>
-          <SlideButton onClick={() => importDexieDb(file, pubKey)}>
+          <SlideButton
+            onClick={async () => {
+              await importDexieDb(
+                db,
+                file,
+                pubKey,
+                () => toast.success('Datenbank erfolgreich importiert!'),
+                () => toast.error('Datenbank konnte nicht importiert werden!'),
+              );
+            }}
+          >
             DB Importieren
           </SlideButton>
         </>
       )}
+      <br />
+
+      <SlideButton onClick={() => back()}>Zurück</SlideButton>
     </>
   );
 };

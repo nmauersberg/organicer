@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import ReactTextareaAutosize from 'react-textarea-autosize';
 import { css, styled } from 'twin.macro';
 import { useDexieDb } from '../../dexie/db';
@@ -8,21 +9,18 @@ export function AddJournalEntry() {
   const [db] = useDexieDb();
   const [content, setContent] = useState('');
   const [date, setDate] = useState(new Date());
-  const [status, setStatus] = useState('');
 
   async function addEntry() {
     try {
-      const id = await db.journal.add({
+      await db.journal.add({
         date: date.toISOString(),
         content,
       });
-      setStatus(
-        `Entry of ${date.toISOString()} successfully added. Got id ${id}`,
-      );
+      toast.success('Tagebucheintrag angelegt!');
       setContent('');
       setDate(new Date());
     } catch (error) {
-      setStatus(`Failed to add entry of ${date.toISOString()}: ${error}`);
+      toast.error('Tagebucheintrag konnte nicht angelegt werden!');
     }
   }
 

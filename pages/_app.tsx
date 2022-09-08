@@ -14,6 +14,7 @@ import { cache } from '@emotion/css';
 import { FadeIn } from 'anima-react';
 import { SlideButton } from '../components/button/SlideButton';
 import { SmallTitle, Title } from '../components/text';
+import { Toaster } from 'react-hot-toast';
 
 // Initialize p2panda wasm code
 initWebAssembly(); //.then(() => console.log('p2panda initialized'));
@@ -24,6 +25,7 @@ function MyApp(appProps: AppProps) {
   return (
     <CacheProvider value={cache}>
       <GlobalStyles />
+      <Toaster />
       <EncryptStorageProvider>
         <InitApp appProps={appProps} />
       </EncryptStorageProvider>

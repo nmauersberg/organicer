@@ -2,8 +2,8 @@ import { FadeIn } from 'anima-react';
 import { css, styled } from 'twin.macro';
 import { JustifyBetween } from '../../pages/[[...slug]]';
 import { Page } from '../menu/MainMenu';
-import { AddJournalEntry } from '../MicroJournal/AddEntry';
-import { EntryList } from '../MicroJournal/EntryList';
+import { AddJournalEntry } from '../journal/AddEntry';
+import { EntryList } from '../journal/EntryList';
 import { SmallTitle } from '../text';
 
 type JournalProps = {

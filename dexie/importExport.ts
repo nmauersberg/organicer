@@ -7,22 +7,44 @@ import { ExtendedDexie } from './db';
 
 const importOptions: ImportOptions = {
   overwriteValues: true,
+  acceptVersionDiff: true,
+  clearTablesBeforeImport: true,
 };
 
-export const importDexieDb = async (blob: Blob, pubKey: string | null) => {
-  if (pubKey) {
-    const fr = new FileReader();
+export const importDexieDb = async (
+  db: ExtendedDexie,
+  blob: Blob,
+  pubKey: string | null,
+  onSuccess: () => void,
+  onError: () => void,
+) => {
+  try {
+    if (pubKey) {
+      const fr = new FileReader();
 
-    fr.onload = async e => {
-      if (e && e.target && typeof e.target.result == 'string') {
-        const json = JSON.parse(e.target.result);
-        json.data.databaseName = pubKey;
-        const updatedBlob = new Blob([JSON.stringify(json, null, 2)]);
-        await importDB(updatedBlob, importOptions);
-      }
-    };
-
-    fr.readAsText(blob);
+      fr.onload = async e => {
+        if (e && e.target && typeof e.target.result == 'string') {
+          const json = JSON.parse(e.target.result);
+          json.data.databaseName = pubKey;
+          const updatedBlob = new Blob([JSON.stringify(json, null, 2)]);
+          await db.delete();
+          const tempDb = await importDB(blob, importOptions);
+          await importDB(updatedBlob, importOptions);
+          tempDb.close();
+          await db.open();
+          await tempDb.delete();
+          onSuccess();
+        } else {
+          onError();
+        }
+      };
+      fr.readAsText(blob);
+    } else {
+      onError();
+    }
+  } catch (error) {
+    console.log(error);
+    onError();
   }
 };
 

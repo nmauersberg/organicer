@@ -1,6 +1,6 @@
 import React from 'react';
 import { Global } from '@emotion/react';
-import tw, { css, theme, GlobalStyles as BaseStyles } from 'twin.macro';
+import tw, { css, GlobalStyles as BaseStyles } from 'twin.macro';
 
 const customStyles = css({
   '*': {
@@ -8,7 +8,6 @@ const customStyles = css({
     WebkitTapHighlightColor: 'rgba(0,0,0,0)',
   },
   body: {
-    WebkitTapHighlightColor: theme`colors.purple.500`,
     padding: 0,
     margin: 0,
     fontFamily: 'Quicksand',
