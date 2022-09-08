@@ -1,6 +1,6 @@
-import React from 'react'
-import { Global } from '@emotion/react'
-import tw, { css, theme, GlobalStyles as BaseStyles } from 'twin.macro'
+import React from 'react';
+import { Global } from '@emotion/react';
+import tw, { css, theme, GlobalStyles as BaseStyles } from 'twin.macro';
 
 const customStyles = css({
   '*': {
@@ -25,17 +25,25 @@ const customStyles = css({
     border: '1px dashed gray',
     padding: '0.25rem',
   },
+  input: {
+    width: '100%',
+    border: '1px dashed gray',
+    padding: '0.25rem',
+  },
   a: {
     color: 'inherit',
     textDecoration: 'none',
   },
-})
+  p: {
+    marginBottom: '1rem',
+  },
+});
 
 const GlobalStyles = () => (
   <>
     <BaseStyles />
     <Global styles={customStyles} />
   </>
-)
+);
 
-export default GlobalStyles
+export default GlobalStyles;

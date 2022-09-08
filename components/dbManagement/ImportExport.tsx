@@ -1,11 +1,25 @@
-import { MutableRefObject, ReactElement, useRef, useState } from 'react';
-import { db } from '../../dexie/db';
+import { KeyPair } from 'p2panda-js';
+import {
+  MutableRefObject,
+  ReactElement,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
+import { EncryptStorageContext } from '../../context/encryptStorage';
+import { useDexieDb } from '../../dexie/db';
 import { exportDexieDb, importDexieDb } from '../../dexie/importExport';
 import { SlideButton } from '../button/SlideButton';
 import { SmallTitle } from '../text';
 
 const ImportExport = (): ReactElement => {
+  const [db] = useDexieDb();
   const [file, setFile] = useState();
+  const [encryptStorage] = useContext(EncryptStorageContext);
+  const [privKey] = useState<string | undefined>(
+    encryptStorage?.getItem('privKey'),
+  );
+  const pubKey = privKey ? new KeyPair(privKey).publicKey() : null;
 
   let upload: any = useRef<MutableRefObject<any>>(null);
 
@@ -19,7 +33,7 @@ const ImportExport = (): ReactElement => {
   return (
     <>
       <SmallTitle>
-        Datenbank exportieren und asl Datei herunterladen:
+        Datenbank exportieren und als Datei herunterladen:
       </SmallTitle>
       <SlideButton onClick={() => exportDexieDb(db)}>
         DB Exportieren
@@ -45,7 +59,7 @@ const ImportExport = (): ReactElement => {
       {file && (
         <>
           <SmallTitle>Backup importieren:</SmallTitle>
-          <SlideButton onClick={() => importDexieDb(file)}>
+          <SlideButton onClick={() => importDexieDb(file, pubKey)}>
             DB Importieren
           </SlideButton>
         </>

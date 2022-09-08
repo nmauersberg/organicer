@@ -1,22 +1,24 @@
-import '../styles/globals.css'
-import '../styles/fonts.css'
-import type { AppProps } from 'next/app'
-import { initWebAssembly } from 'p2panda-js'
-import { useContext, useEffect, useState } from 'react'
+import '../styles/globals.css';
+import '../styles/fonts.css';
+import type { AppProps } from 'next/app';
+import { initWebAssembly } from 'p2panda-js';
+import { useContext, useEffect, useState } from 'react';
 
 import {
   EncryptStorageContext,
   EncryptStorageProvider,
-} from '../context/encryptStorage'
-import GlobalStyles from '../styles/GlobalStyles'
-import { CacheProvider } from '@emotion/react'
-import { cache } from '@emotion/css'
-import { FadeIn } from 'anima-react'
+} from '../context/encryptStorage';
+import GlobalStyles from '../styles/GlobalStyles';
+import { CacheProvider } from '@emotion/react';
+import { cache } from '@emotion/css';
+import { FadeIn } from 'anima-react';
+import { SlideButton } from '../components/button/SlideButton';
+import { SmallTitle, Title } from '../components/text';
 
 // Initialize p2panda wasm code
-initWebAssembly() //.then(() => console.log('p2panda initialized'));
+initWebAssembly(); //.then(() => console.log('p2panda initialized'));
 
-type AppState = 'loading' | 'askPin' | 'initialized'
+type AppState = 'loading' | 'askPin' | 'initialized';
 
 function MyApp(appProps: AppProps) {
   return (
@@ -26,34 +28,34 @@ function MyApp(appProps: AppProps) {
         <InitApp appProps={appProps} />
       </EncryptStorageProvider>
     </CacheProvider>
-  )
+  );
 }
 
 type InitAppProps = {
-  appProps: AppProps
-}
+  appProps: AppProps;
+};
 
 const InitApp = ({ appProps: { Component, pageProps } }: InitAppProps) => {
-  const [appState, setAppState] = useState<AppState>('loading')
-  const [, setEncryptStorage] = useContext(EncryptStorageContext)
+  const [appState, setAppState] = useState<AppState>('loading');
+  const [, setEncryptStorage] = useContext(EncryptStorageContext);
 
   useEffect(() => {
     if (appState !== 'initialized') {
-      const storagePin = localStorage.getItem('pin')
+      const storagePin = localStorage.getItem('pin');
       if (storagePin) {
         const setupStorage = async () => {
-          const { EncryptStorage } = await import('encrypt-storage')
+          const { EncryptStorage } = await import('encrypt-storage');
           const encryptStorage = new EncryptStorage(
             'Storage-Encryption-Pin-' + storagePin,
-          )
-          setEncryptStorage(encryptStorage)
-        }
-        setupStorage().then(() => setAppState('initialized'))
+          );
+          setEncryptStorage(encryptStorage);
+        };
+        setupStorage().then(() => setAppState('initialized'));
       } else {
-        setAppState('askPin')
+        setAppState('askPin');
       }
     }
-  }, [appState])
+  }, [appState]);
 
   switch (appState) {
     case 'loading':
@@ -63,48 +65,68 @@ const InitApp = ({ appProps: { Component, pageProps } }: InitAppProps) => {
             <h2>Loading...</h2>
           </FadeIn>
         </div>
-      )
+      );
     case 'askPin':
-      return <EnterPin pinSaved={() => setAppState('loading')} />
+      return <EnterPin pinSaved={() => setAppState('loading')} />;
     case 'initialized':
-      return <Component {...pageProps} />
+      return <Component {...pageProps} />;
   }
-}
+};
 
 type EnterPinProps = {
-  pinSaved: () => void
-}
+  pinSaved: () => void;
+};
 
 const EnterPin = ({ pinSaved }: EnterPinProps) => {
-  const [pin, setPin] = useState<string | undefined>()
+  const [pin, setPin] = useState<string | undefined>();
 
   const savePin = () => {
     if (pin) {
-      localStorage.setItem('pin', pin)
-      pinSaved()
+      localStorage.setItem('pin', pin);
+      pinSaved();
     }
-  }
+  };
 
   return (
     <div className={'center'}>
-      <FadeIn orientation="up" duration={0.5} delay={0.1}>
-        <h2>Please enter a PIN to access your encrypted storage:</h2>
-        <input
-          type="number"
-          placeholder="Encryption PIN"
-          onChange={e => setPin(e.target.value)}
-        />
-        <button
-          disabled={!pin}
-          onClick={() => {
-            savePin()
-          }}
-        >
-          Save
-        </button>
-      </FadeIn>
+      <div style={{ maxWidth: '50rem' }}>
+        <FadeIn orientation="up" duration={0.5} delay={0.1}>
+          <Title>Hi! Es sieht aus, als wärst du neu hier.</Title>
+          <p>
+            Diese App funktioniert etwas anders, als übliche Webapps. Alle Daten
+            werden grundsätzlich nur auf deinem Gerät gespeichert und nur auf
+            deine explizite Anweisung mit anderen geteilt.
+          </p>
+          <p>
+            Für ein sicheres und verschlüsseltes Teilen von Daten, kannst du im
+            nächsten Schritt ein neues Schlüsselpaar generieren, oder dich mit
+            einem vorhandenen privaten Schlüssel anmelden. Der private Schlüssel
+            wird auf deinem Gerät gespeichert und mit der folgenden Pin
+            verschlüsselt.
+          </p>
+          <SmallTitle>Bitte lege eine Pin fest:</SmallTitle>
+          <input
+            type="number"
+            placeholder="Verschlüsselungs PIN"
+            onChange={e => setPin(e.target.value)}
+            onKeyPress={e => {
+              if (e.key === 'Enter') {
+                savePin();
+              }
+            }}
+          />
+          <SlideButton
+            disabled={!pin}
+            onClick={() => {
+              savePin();
+            }}
+          >
+            Speichern
+          </SlideButton>
+        </FadeIn>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default MyApp
+export default MyApp;

@@ -1,27 +1,28 @@
-import React, { useState } from 'react'
-import ReactTextareaAutosize from 'react-textarea-autosize'
-import { css, styled } from 'twin.macro'
-import { db } from '../../dexie/db'
-import { SlideButton } from '../button/SlideButton'
+import React, { useState } from 'react';
+import ReactTextareaAutosize from 'react-textarea-autosize';
+import { css, styled } from 'twin.macro';
+import { useDexieDb } from '../../dexie/db';
+import { SlideButton } from '../button/SlideButton';
 
 export function AddJournalEntry() {
-  const [content, setContent] = useState('')
-  const [date, setDate] = useState(new Date())
-  const [status, setStatus] = useState('')
+  const [db] = useDexieDb();
+  const [content, setContent] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [status, setStatus] = useState('');
 
   async function addEntry() {
     try {
       const id = await db.journal.add({
         date: date.toISOString(),
         content,
-      })
+      });
       setStatus(
         `Entry of ${date.toISOString()} successfully added. Got id ${id}`,
-      )
-      setContent('')
-      setDate(new Date())
+      );
+      setContent('');
+      setDate(new Date());
     } catch (error) {
-      setStatus(`Failed to add entry of ${date.toISOString()}: ${error}`)
+      setStatus(`Failed to add entry of ${date.toISOString()}: ${error}`);
     }
   }
 
@@ -36,11 +37,11 @@ export function AddJournalEntry() {
         Speichern
       </SlideButton>
     </Frame>
-  )
+  );
 }
 
 const Frame = styled.div(() => [
   css`
     margin-top: 2rem;
   `,
-])
+]);

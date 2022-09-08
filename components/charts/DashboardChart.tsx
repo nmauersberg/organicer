@@ -3,9 +3,10 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 import { ApexOptions } from 'apexcharts';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db } from '../../dexie/db';
+import { useDexieDb } from '../../dexie/db';
 
 export const DashboardChart = () => {
+  const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const entries = useLiveQuery(() => db.journal.toArray());
 

@@ -1,12 +1,13 @@
-import { useLiveQuery } from 'dexie-react-hooks'
-import { css, styled } from 'twin.macro'
-import { db } from '../../dexie/db'
-import { DateText, JustText } from '../text'
+import { useLiveQuery } from 'dexie-react-hooks';
+import { css, styled } from 'twin.macro';
+import { useDexieDb } from '../../dexie/db';
+import { DateText, JustText } from '../text';
 
 export function EntryList() {
+  const [db] = useDexieDb();
   const entries = useLiveQuery(() =>
     db.journal.toArray().then(entries => entries.reverse()),
-  )
+  );
 
   return (
     <div>
@@ -22,7 +23,7 @@ export function EntryList() {
         </Entry>
       ))}
     </div>
-  )
+  );
 }
 
 export const Entry = styled.div(() => [
@@ -30,4 +31,4 @@ export const Entry = styled.div(() => [
     margin: 0.5rem 0.25rem 0.5rem 0;
     white-space: pre-wrap;
   `,
-])
+]);

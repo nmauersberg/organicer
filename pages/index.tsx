@@ -27,6 +27,7 @@ const Home: NextPage = () => {
   );
   const [currentPage, setCurrentPage] = useState<Page>(pages[0]);
   const pubKey = privKey ? new KeyPair(privKey).publicKey() : null;
+  const [validKeypair, setValidKeypair] = useState(false);
 
   return (
     <PageContainer>
@@ -37,24 +38,36 @@ const Home: NextPage = () => {
       </Head>
 
       <PageTitle>
-        <PageLogo onClick={() => setCurrentPage(pages[0])} />
+        <div />
         <FadeIn orientation="up" duration={0.5} distance={10}>
           {currentPage.label}
         </FadeIn>
-        <PageUser
-          showSettings={() =>
-            setCurrentPage(pages.find(p => p.id === 'settings') || pages[0])
-          }
-        />
+        <div />
       </PageTitle>
 
       <Frame>
         {pubKey ? (
-          <PageContent page={currentPage} key={currentPage.id} />
-        ) : (
           <>
-            <p>Generate your Keys!</p>
-            <button
+            <PageTitle>
+              <PageLogo onClick={() => setCurrentPage(pages[0])} />
+              <FadeIn orientation="up" duration={0.5} distance={10}>
+                {currentPage.label}
+              </FadeIn>
+              <PageUser
+                showSettings={() =>
+                  setCurrentPage(
+                    pages.find(p => p.id === 'settings') || pages[0],
+                  )
+                }
+              />
+            </PageTitle>
+            <PageContent page={currentPage} key={currentPage.id} />
+            <MainMenu setCurrentPage={setCurrentPage} />
+          </>
+        ) : (
+          <div style={{ maxWidth: '50rem', width: '100%' }}>
+            <SmallTitle>Erstelle ein neues Schlüsselpaar:</SmallTitle>
+            <SlideButton
               onClick={() => {
                 const keyPair = new KeyPair();
                 encryptStorage?.setItem('privKey', keyPair.privateKey());
@@ -62,11 +75,27 @@ const Home: NextPage = () => {
               }}
             >
               Generate Keys
-            </button>
-          </>
+            </SlideButton>
+            <br />
+            <br />
+
+            <SmallTitle>Oder nutze einen bestehenden Schlüssel:</SmallTitle>
+            <input
+              type="password"
+              placeholder="Privater Schlüssel"
+              onChange={e => {
+                try {
+                  const keyPair = new KeyPair(e.target.value);
+                  encryptStorage?.setItem('privKey', keyPair.privateKey());
+                  setPrivKey(keyPair.privateKey());
+                } catch (error) {
+                  console.log('keypair Invalid');
+                }
+              }}
+            />
+          </div>
         )}
       </Frame>
-      <MainMenu setCurrentPage={setCurrentPage} />
     </PageContainer>
   );
 };

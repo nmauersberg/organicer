@@ -1,19 +1,24 @@
-import { mdiTarget } from '@mdi/js';
-import Dexie from 'dexie';
-import {
-  importDB,
-  exportDB,
-  importInto,
-  peakImportFile,
-} from 'dexie-export-import';
+import { importDB, exportDB } from 'dexie-export-import';
 import { ExtendedDexie } from './db';
 
 //
 // Import from Blob or File to Dexie instance:
 //
 
-export const importDexieDb = async (blob: Blob) => {
-  const db = await importDB(blob);
+export const importDexieDb = async (blob: Blob, pubKey: string | null) => {
+  if (pubKey) {
+    const fr = new FileReader();
+
+    fr.onload = async e => {
+      if (e && e.target && typeof e.target.result == 'string') {
+        const json = JSON.parse(e.target.result);
+        json.data.databaseName = pubKey;
+        await importDB(new Blob([JSON.stringify(json, null, 2)]));
+      }
+    };
+
+    fr.readAsText(blob);
+  }
 };
 
 //
