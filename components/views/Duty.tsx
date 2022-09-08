@@ -1,12 +1,9 @@
 import { FadeIn } from 'anima-react';
 import { css, styled } from 'twin.macro';
 import { JustifyBetween } from '../../pages/[[...slug]]';
-import { SlideButton } from '../button/SlideButton';
-import { AddDailyDuty } from '../duty/daily/AddDailyDuty';
 import { DailyDuty } from '../duty/daily/DailyDuty';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
-import { DailyDutyList } from '../duty/daily/DailyDutyList';
 
 export type Duty = {
   id: string;
@@ -29,7 +26,6 @@ export const Duty = ({ page }: DutyProps) => {
           <DailyDuty />
         </DutyContainer>
       </FadeIn>
-      <AddDailyDuty />
     </JustifyBetween>
   );
 };

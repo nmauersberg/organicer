@@ -8,42 +8,34 @@ import { useDexieDb } from '../../dexie/db';
 export const DashboardChart = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
-  const entries = useLiveQuery(() => db.journal.toArray());
+  const journalEntries = useLiveQuery(() => db.journal.toArray());
+  const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray());
+  const settings = useLiveQuery(() => db.userSettings.get(1));
 
-  if (!entries || entries.length === 0) return <></>;
+  if (!settings || !journalEntries || journalEntries.length === 0) return <></>;
 
-  const dates = getDates(entries.map(entry => new Date(entry.date)));
+  const dates = getDates(journalEntries.map(entry => new Date(entry.date)));
 
-  entries.forEach(e => {
+  journalEntries.forEach(e => {
     const entryCount = dates[new Date(e.date).toDateString()];
     dates[new Date(e.date).toDateString()] =
       typeof entryCount === 'number' ? entryCount + 1 : 1;
   });
 
-  const data = Object.keys(dates).map(k => ({
+  const dataJournal = Object.keys(dates).map(k => ({
     x: new Date(k).getTime(),
     y: dates[k],
   }));
 
-  const max = Math.max(...data.map(o => o.y));
+  const max = Math.max(...dataJournal.map(o => o.y));
 
   const options: ApexOptions = {
-    chart: {
-      id: 'line',
-    },
-    colors: ['#db5461'],
+    colors: ['#db5461', '#53a2be', '#26c485'],
     xaxis: {
       type: 'category',
       labels: {
         formatter: val =>
           new Date(val).toLocaleString('de-DE', { weekday: 'long' }),
-        // format: 'dddd',
-        // datetimeFormatter: {
-        //   year: 'yyyy',
-        //   month: "MMM 'yy",
-        //   day: 'dd MMM',
-        //   hour: 'HH:mm',
-        // },
       },
     },
     yaxis: {
@@ -55,13 +47,68 @@ export const DashboardChart = () => {
     },
     stroke: {
       curve: 'smooth',
+      width: [8, 1, 1],
+    },
+    plotOptions: {
+      bar: {
+        columnWidth: '25%',
+      },
     },
   };
+
+  const dataDailyDutiesGoal = Object.keys(dates).map(k => {
+    const dde = dailyDutyEntries?.find(entry => {
+      return new Date(k).toDateString() === new Date(entry.date).toDateString();
+    });
+
+    if (dde) {
+      return {
+        x: new Date(k).getTime(),
+        y: dde.duties.length,
+      };
+    } else {
+      return {
+        x: new Date(k).getTime(),
+        y: settings.dailyDuty.duties.length,
+      };
+    }
+  });
+
+  const dataDailyDutiesDone = Object.keys(dates).map(k => {
+    const dde = dailyDutyEntries?.find(entry => {
+      return new Date(k).toDateString() === new Date(entry.date).toDateString();
+    });
+
+    if (dde) {
+      return {
+        x: new Date(k).getTime(),
+        y: dde.duties.reduce((p, c) => (c.done ? 1 : 0 + p), 0),
+      };
+    } else {
+      return {
+        x: new Date(k).getTime(),
+        y: 0,
+      };
+    }
+  });
 
   const series = [
     {
       name: 'Tagebuch Einträge',
-      data: data,
+      data: dataJournal,
+      type: 'line',
+    },
+    {
+      name: 'Aufgaben Ziel',
+      type: 'column',
+      stacked: false,
+      data: dataDailyDutiesGoal,
+    },
+    {
+      name: 'Aufgaben Done',
+      type: 'column',
+      stacked: false,
+      data: dataDailyDutiesDone,
     },
   ];
 

@@ -1,53 +1,47 @@
+import { mdiCheckboxBlankCircleOutline, mdiCheckCircleOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
+import { BounceLoader } from 'react-spinners';
 import { css, styled } from 'twin.macro';
 import {
   DailyDuties,
   defaultUserSettings,
   useDexieDb,
 } from '../../../dexie/db';
-import { DateText, JustText, SmallTitle } from '../../text';
+import { JustText, SmallTitle } from '../../text';
 
 export const DailyDuty = () => {
   const [db] = useDexieDb();
   const entries = useLiveQuery(() => db.dailyDuty.toArray());
-  const { dailyDuty } =
-    useLiveQuery(() => db.userSettings.get(1)) || defaultUserSettings;
+  const settings = useLiveQuery(() => db.userSettings.get(1));
 
-  const [today, setToday] = useState(
-    entries?.find(
-      entry =>
-        new Date(entry.date).toDateString() === new Date().toDateString(),
-    ) || {
-      date: new Date().toISOString(),
-      duties: dailyDuty.duties.map(d => {
-        return {
-          id: d.id,
-          label: d.label,
-          done: false,
-        };
-      }),
-    },
-  );
+  const [today, setToday] = useState<DailyDuties | undefined>();
 
   useEffect(() => {
-    setToday(
-      entries?.find(
-        entry =>
-          new Date(entry.date).toDateString() === new Date().toDateString(),
-      ) || {
-        date: new Date().toISOString(),
-        duties: dailyDuty.duties.map(d => {
-          return {
-            id: d.id,
-            label: d.label,
-            done: false,
-          };
-        }),
-      },
-    );
-  }, [dailyDuty]);
+    if (settings) {
+      setToday(
+        entries?.find(
+          entry =>
+            new Date(entry.date).toDateString() === new Date().toDateString(),
+        ) || {
+          date: new Date().toISOString(),
+          duties: settings.dailyDuty.duties.map(d => {
+            return {
+              id: d.id,
+              label: d.label,
+              done: false,
+            };
+          }),
+        },
+      );
+    }
+  }, [settings]);
+
+  if (!settings || !today) {
+    return <BounceLoader color="red" />;
+  }
 
   const updateDailyDuty = async (entry: DailyDuties) => {
     try {
@@ -70,19 +64,26 @@ export const DailyDuty = () => {
           Deine Tagesaufgaben für den{' '}
           {new Date(today.date).toLocaleDateString('de-DE')}
         </SmallTitle>
+        <br />
         {today.duties.map((duty, index) => {
           return (
-            <JustText
-              key={duty.id}
-              onClick={() => {
-                const modified = { ...today };
-                modified.duties[index].done = !modified.duties[index].done;
-                updateDailyDuty(modified);
-                setToday(modified);
-              }}
-            >
-              {duty.label} : {duty.done ? '[x]' : '[ ]'}
-            </JustText>
+            <DutyItem key={duty.id}>
+              {duty.done ? (
+                <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
+              ) : (
+                <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
+              )}
+              <JustText
+                onClick={() => {
+                  const modified = { ...today };
+                  modified.duties[index].done = !modified.duties[index].done;
+                  updateDailyDuty(modified);
+                  setToday(modified);
+                }}
+              >
+                {duty.label}
+              </JustText>
+            </DutyItem>
           );
         })}
       </Entry>
@@ -94,5 +95,13 @@ export const Entry = styled.div(() => [
   css`
     margin: 0.5rem 0.25rem 0.5rem 0;
     white-space: pre-wrap;
+  `,
+]);
+
+export const DutyItem = styled.div(() => [
+  css`
+    display: flex;
+    gap: 0.5rem;
+    cursor: pointer;
   `,
 ]);

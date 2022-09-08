@@ -5,15 +5,18 @@ import { JustText, SmallTitle } from '../../text';
 
 export function DailyDutyList() {
   const [db] = useDexieDb();
-  const { dailyDuty } =
-    useLiveQuery(() => db.userSettings.get(1)) || defaultUserSettings;
+  const settings = useLiveQuery(() => db.userSettings.get(1));
+
+  if (!settings) {
+    return null;
+  }
 
   return (
     <div>
       <SmallTitle>Deine täglichen Aufgaben:</SmallTitle>
-      {dailyDuty ? (
+      {settings.dailyDuty ? (
         <Entry>
-          {dailyDuty.duties.map(duty => {
+          {settings.dailyDuty.duties.map(duty => {
             return <JustText key={duty.id}>{duty.label}</JustText>;
           })}
         </Entry>
