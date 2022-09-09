@@ -15,6 +15,7 @@ import { FadeIn } from 'anima-react';
 import { SlideButton } from '../components/button/SlideButton';
 import { SmallTitle, Title } from '../components/text';
 import { Toaster } from 'react-hot-toast';
+import Layout from '../components/layout/Layout';
 
 // Initialize p2panda wasm code
 initWebAssembly(); //.then(() => console.log('p2panda initialized'));
@@ -27,7 +28,9 @@ function MyApp(appProps: AppProps) {
       <GlobalStyles />
       <Toaster />
       <EncryptStorageProvider>
-        <InitApp appProps={appProps} />
+        <Layout>
+          <InitApp appProps={appProps} />
+        </Layout>
       </EncryptStorageProvider>
     </CacheProvider>
   );
