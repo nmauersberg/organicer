@@ -51,7 +51,8 @@ const DropDownContent = styled.div<DropDownContentProps>(({ visible }) => {
     css`
       display: ${visible ? 'block' : 'none'};
       position: absolute;
-      background-color: white;
+      background-color: #db5461;
+      color: white;
       min-width: 160px;
       padding: 12px 16px;
       padding-top: 0.5rem;
@@ -59,7 +60,6 @@ const DropDownContent = styled.div<DropDownContentProps>(({ visible }) => {
       text-align: right;
       right: 3px;
       white-space: nowrap;
-      box-shadow: 0px 0px 20px 2px #db5461;
       border-radius: 30px 10px;
     `,
   ];
