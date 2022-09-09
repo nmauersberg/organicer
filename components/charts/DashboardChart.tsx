@@ -94,18 +94,18 @@ export const DashboardChart = () => {
 
   const series = [
     {
-      name: 'Tagebuch Einträge',
+      name: 'Tagebuch',
       data: dataJournal,
       type: 'line',
     },
     {
-      name: 'Aufgaben Ziel',
+      name: 'Ziele',
       type: 'column',
       stacked: false,
       data: dataDailyDutiesGoal,
     },
     {
-      name: 'Aufgaben Done',
+      name: 'Done',
       type: 'column',
       stacked: false,
       data: dataDailyDutiesDone,

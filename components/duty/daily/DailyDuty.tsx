@@ -63,22 +63,21 @@ export const DailyDuty = () => {
         <br />
         {today.duties.map((duty, index) => {
           return (
-            <DutyItem key={duty.id}>
+            <DutyItem
+              key={duty.id}
+              onClick={() => {
+                const modified = { ...today };
+                modified.duties[index].done = !modified.duties[index].done;
+                updateDailyDuty(modified);
+                setToday(modified);
+              }}
+            >
               {duty.done ? (
                 <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
               ) : (
                 <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
               )}
-              <JustText
-                onClick={() => {
-                  const modified = { ...today };
-                  modified.duties[index].done = !modified.duties[index].done;
-                  updateDailyDuty(modified);
-                  setToday(modified);
-                }}
-              >
-                {duty.label}
-              </JustText>
+              <JustText>{duty.label}</JustText>
             </DutyItem>
           );
         })}
