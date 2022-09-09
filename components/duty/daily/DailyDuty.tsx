@@ -5,11 +5,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BounceLoader } from 'react-spinners';
 import { css, styled } from 'twin.macro';
-import {
-  DailyDuties,
-  defaultUserSettings,
-  useDexieDb,
-} from '../../../dexie/db';
+import { DailyDuties, useDexieDb } from '../../../dexie/db';
 import { JustText, SmallTitle } from '../../text';
 
 export const DailyDuty = () => {
@@ -20,9 +16,9 @@ export const DailyDuty = () => {
   const [today, setToday] = useState<DailyDuties | undefined>();
 
   useEffect(() => {
-    if (settings) {
+    if (settings && entries) {
       setToday(
-        entries?.find(
+        entries.find(
           entry =>
             new Date(entry.date).toDateString() === new Date().toDateString(),
         ) || {
@@ -37,7 +33,7 @@ export const DailyDuty = () => {
         },
       );
     }
-  }, [settings]);
+  }, [settings, entries]);
 
   if (!settings || !today) {
     return <BounceLoader color="red" />;

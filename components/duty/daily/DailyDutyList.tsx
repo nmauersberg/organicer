@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { css, styled } from 'twin.macro';
-import { defaultUserSettings, useDexieDb } from '../../../dexie/db';
+import { useDexieDb } from '../../../dexie/db';
 import { JustText, SmallTitle } from '../../text';
 
 export function DailyDutyList() {
