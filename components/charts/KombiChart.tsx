@@ -16,25 +16,20 @@ export const DashboardChart = () => {
     return <></>;
   }
 
-  const journalDates =
-    journalEntries.length > 0
-      ? getDates(journalEntries.map(entry => new Date(entry.date)))
-      : {};
+  const journalDates = mapDates(journalEntries);
+  const dailyDutyDates = mapDates(dailyDutyEntries);
 
-  const dailyDutyDates =
-    journalEntries.length > 0
-      ? getDates(dailyDutyEntries.map(entry => new Date(entry.date)))
-      : {};
+  const dates = getDates([...journalDates, ...dailyDutyDates, new Date()]);
 
   journalEntries.forEach(e => {
-    const entryCount = journalDates[new Date(e.date).toDateString()];
-    journalDates[new Date(e.date).toDateString()] =
+    const entryCount = dates[new Date(e.date).toDateString()];
+    dates[new Date(e.date).toDateString()] =
       typeof entryCount === 'number' ? entryCount + 1 : 1;
   });
 
-  const dataJournal = Object.keys(journalDates).map(k => ({
+  const dataJournal = Object.keys(dates).map(k => ({
     x: new Date(k).getTime(),
-    y: journalDates[k],
+    y: dates[k],
   }));
 
   const max = Math.max(...dataJournal.map(o => o.y));
@@ -68,7 +63,7 @@ export const DashboardChart = () => {
     },
   };
 
-  const dataDailyDutiesGoal = Object.keys(dailyDutyDates).map(k => {
+  const dataDailyDutiesGoal = Object.keys(dates).map(k => {
     const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
 
     return {
@@ -77,7 +72,7 @@ export const DashboardChart = () => {
     };
   });
 
-  const dataDailyDutiesDone = Object.keys(dailyDutyDates).map(k => {
+  const dataDailyDutiesDone = Object.keys(dates).map(k => {
     const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
 
     return {
@@ -125,6 +120,9 @@ export const DashboardChart = () => {
 const compareDates = (date1: string | Date, date2: string | Date): boolean => {
   return new Date(date1).toDateString() === new Date(date2).toDateString();
 };
+
+const mapDates = (el: { date: string }[]) =>
+  el.map(entry => new Date(entry.date));
 
 const getDates = (dates: Date[]) => {
   const min = dates.reduce((a, b) => (a < b ? a : b));
