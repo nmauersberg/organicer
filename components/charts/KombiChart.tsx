@@ -8,23 +8,33 @@ import { useDexieDb } from '../../dexie/db';
 export const DashboardChart = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
-  const journalEntries = useLiveQuery(() => db.journal.toArray());
-  const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray());
+  const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
+  const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
 
-  if (!settings || !journalEntries || journalEntries.length === 0) return <></>;
+  if (!settings) {
+    return <></>;
+  }
 
-  const dates = getDates(journalEntries.map(entry => new Date(entry.date)));
+  const journalDates =
+    journalEntries.length > 0
+      ? getDates(journalEntries.map(entry => new Date(entry.date)))
+      : {};
+
+  const dailyDutyDates =
+    journalEntries.length > 0
+      ? getDates(dailyDutyEntries.map(entry => new Date(entry.date)))
+      : {};
 
   journalEntries.forEach(e => {
-    const entryCount = dates[new Date(e.date).toDateString()];
-    dates[new Date(e.date).toDateString()] =
+    const entryCount = journalDates[new Date(e.date).toDateString()];
+    journalDates[new Date(e.date).toDateString()] =
       typeof entryCount === 'number' ? entryCount + 1 : 1;
   });
 
-  const dataJournal = Object.keys(dates).map(k => ({
+  const dataJournal = Object.keys(journalDates).map(k => ({
     x: new Date(k).getTime(),
-    y: dates[k],
+    y: journalDates[k],
   }));
 
   const max = Math.max(...dataJournal.map(o => o.y));
@@ -35,7 +45,9 @@ export const DashboardChart = () => {
       type: 'category',
       labels: {
         formatter: val =>
-          new Date(val).toLocaleString('de-DE', { weekday: 'long' }),
+          new Date(val)
+            .toLocaleString('de-DE', { weekday: 'long' })
+            .substring(0, 2),
       },
     },
     yaxis: {
@@ -56,40 +68,22 @@ export const DashboardChart = () => {
     },
   };
 
-  const dataDailyDutiesGoal = Object.keys(dates).map(k => {
-    const dde = dailyDutyEntries?.find(entry => {
-      return new Date(k).toDateString() === new Date(entry.date).toDateString();
-    });
+  const dataDailyDutiesGoal = Object.keys(dailyDutyDates).map(k => {
+    const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
 
-    if (dde) {
-      return {
-        x: new Date(k).getTime(),
-        y: dde.duties.length,
-      };
-    } else {
-      return {
-        x: new Date(k).getTime(),
-        y: settings.dailyDuty.duties.length,
-      };
-    }
+    return {
+      x: new Date(k).getTime(),
+      y: dde?.duties.length || settings.dailyDuty.duties.length,
+    };
   });
 
-  const dataDailyDutiesDone = Object.keys(dates).map(k => {
-    const dde = dailyDutyEntries?.find(entry => {
-      return new Date(k).toDateString() === new Date(entry.date).toDateString();
-    });
+  const dataDailyDutiesDone = Object.keys(dailyDutyDates).map(k => {
+    const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
 
-    if (dde) {
-      return {
-        x: new Date(k).getTime(),
-        y: dde.duties.reduce((p, c) => (c.done ? 1 : 0 + p), 0),
-      };
-    } else {
-      return {
-        x: new Date(k).getTime(),
-        y: 0,
-      };
-    }
+    return {
+      x: new Date(k).getTime(),
+      y: dde?.duties.filter(d => d.done).length || 0,
+    };
   });
 
   const series = [
@@ -128,6 +122,10 @@ export const DashboardChart = () => {
   );
 };
 
+const compareDates = (date1: string | Date, date2: string | Date): boolean => {
+  return new Date(date1).toDateString() === new Date(date2).toDateString();
+};
+
 const getDates = (dates: Date[]) => {
   const min = dates.reduce((a, b) => (a < b ? a : b));
   const max = dates.reduce((a, b) => (a > b ? a : b));
@@ -136,7 +134,6 @@ const getDates = (dates: Date[]) => {
 
 const getDatesInRange = (startDate: Date, endDate: Date) => {
   const date = new Date(startDate.getTime());
-
   const dates: { [key: string]: number } = {};
 
   while (date <= endDate) {

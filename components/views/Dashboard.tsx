@@ -1,5 +1,5 @@
 import { FadeIn } from 'anima-react';
-import { DashboardChart } from '../charts/DashboardChart';
+import { DashboardChart } from '../charts/KombiChart';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
 

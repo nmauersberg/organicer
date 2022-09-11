@@ -1,7 +1,7 @@
 import { mdiCheckboxBlankCircleOutline, mdiCheckCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BounceLoader } from 'react-spinners';
 import { css, styled } from 'twin.macro';
@@ -72,11 +72,7 @@ export const DailyDuty = () => {
                 setToday(modified);
               }}
             >
-              {duty.done ? (
-                <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
-              ) : (
-                <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
-              )}
+              <Checkbox checked={duty.done} />
               <JustText>{duty.label}</JustText>
             </DutyItem>
           );
@@ -85,6 +81,20 @@ export const DailyDuty = () => {
     </div>
   );
 };
+
+type CheckboxProps = {
+  checked: boolean;
+};
+
+const Checkbox = ({ checked }: CheckboxProps): ReactElement => (
+  <>
+    {checked ? (
+      <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
+    ) : (
+      <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
+    )}
+  </>
+);
 
 export const Entry = styled.div(() => [
   css`
