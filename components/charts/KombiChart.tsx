@@ -5,7 +5,7 @@ import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
 
-export const DashboardChart = () => {
+export const KombiChart = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
@@ -65,6 +65,17 @@ export const DashboardChart = () => {
 
   const dataDailyDutiesGoal = Object.keys(dates).map(k => {
     const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
+
+    if (
+      !dailyDutyEntries.some(e => {
+        return removeTime(new Date(e.date)) <= removeTime(new Date(k));
+      })
+    ) {
+      return {
+        x: new Date(k).getTime(),
+        y: 0,
+      };
+    }
 
     return {
       x: new Date(k).getTime(),
@@ -127,17 +138,21 @@ const mapDates = (el: { date: string }[]) =>
 const getDates = (dates: Date[]) => {
   const min = dates.reduce((a, b) => (a < b ? a : b));
   const max = dates.reduce((a, b) => (a > b ? a : b));
-  return getDatesInRange(min, max);
+
+  return getDatesInRange(removeTime(min), removeTime(max));
 };
 
 const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const date = new Date(startDate.getTime());
   const dates: { [key: string]: number } = {};
 
-  while (date <= endDate) {
-    dates[new Date(date).toDateString()] = 0;
-    date.setDate(date.getDate() + 1);
+  while (startDate <= endDate) {
+    dates[new Date(startDate).toDateString()] = 0;
+    startDate.setDate(startDate.getDate() + 1);
   }
 
   return dates;
 };
+
+function removeTime(date = new Date()) {
+  return new Date(date.toDateString());
+}

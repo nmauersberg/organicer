@@ -27,6 +27,10 @@ export const DropDown = ({ children, label }: DropDownProps) => {
             setOverrideVisible(false);
           }, 500)
         }
+        onClick={() => {
+          setOverrideVisible(false);
+          setVisible(false);
+        }}
         visible={visible || overrideVisible}
       >
         {children}

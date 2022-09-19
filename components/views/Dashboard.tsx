@@ -1,5 +1,5 @@
 import { FadeIn } from 'anima-react';
-import { DashboardChart } from '../charts/KombiChart';
+import { KombiChart } from '../charts/KombiChart';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
 
@@ -13,7 +13,7 @@ export const Dashboard = ({ page }: DashboardProps) => {
       <>
         {page.description !== '' && <SmallTitle>{page.description}</SmallTitle>}
       </>
-      <DashboardChart />
+      <KombiChart />
     </FadeIn>
   );
 };
