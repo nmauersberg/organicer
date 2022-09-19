@@ -1,7 +1,6 @@
 import { FadeIn } from 'anima-react';
-import { DailyDutyList } from '../duty/daily/DailyDutyList';
+import { ListDailyDuty } from '../duty/daily/ListDailyDuty';
 import { SlideButton } from '../button/SlideButton';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ManageDB } from './ManageDB';
 import { AddDailyDuty } from '../duty/daily/AddDailyDuty';
@@ -28,7 +27,7 @@ export const Settings = () => {
       <SettingsElement>
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <Title>Täglche Aufgaben:</Title>
-          <DailyDutyList />
+          <ListDailyDuty />
           <AddDailyDuty />
         </FadeIn>
       </SettingsElement>

@@ -5,10 +5,10 @@ import { ReactElement, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { BounceLoader } from 'react-spinners';
 import { css, styled } from 'twin.macro';
-import { DailyDuties, useDexieDb } from '../../../dexie/db';
+import { DailyDuties, useDexieDb, UserSettings } from '../../../dexie/db';
 import { JustText, SmallTitle } from '../../text';
 
-export const DailyDuty = () => {
+export const AppDailyDuty = () => {
   const [db] = useDexieDb();
   const entries = useLiveQuery(() => db.dailyDuty.toArray());
   const settings = useLiveQuery(() => db.userSettings.get(1));
@@ -17,21 +17,13 @@ export const DailyDuty = () => {
 
   useEffect(() => {
     if (settings && entries) {
-      setToday(
-        entries.find(
-          entry =>
-            new Date(entry.date).toDateString() === new Date().toDateString(),
-        ) || {
-          date: new Date().toISOString(),
-          duties: settings.dailyDuty.duties.map(d => {
-            return {
-              id: d.id,
-              label: d.label,
-              done: false,
-            };
-          }),
-        },
+      // Get an existing daily duty
+      const todaysDailyDuty = entries.find(
+        entry =>
+          new Date(entry.date).toDateString() === new Date().toDateString(),
       );
+
+      setToday(todaysDailyDuty || mkInitDailyDuty(settings));
     }
   }, [settings, entries]);
 
@@ -43,13 +35,13 @@ export const DailyDuty = () => {
     try {
       if (entry.id) {
         await db.dailyDuty.update(entry.id, entry);
-        toast.success('Tagebucheintrag aktualisiert!');
+        toast.success('Daily aktualisiert!');
       } else {
         await db.dailyDuty.add(entry);
-        toast.success('Tagebucheintrag angelegt!');
+        toast.success('Daily angelegt!');
       }
     } catch (error) {
-      toast.error('Tagebucheintrag konnte nicht angelegt werden!');
+      toast.error('Daily konnte nicht angelegt werden!');
     }
   };
 
@@ -110,3 +102,14 @@ export const DutyItem = styled.div(() => [
     cursor: pointer;
   `,
 ]);
+
+const mkInitDailyDuty = (settings: UserSettings) => ({
+  date: new Date().toISOString(),
+  duties: settings.dailyDuty.duties.map(d => {
+    return {
+      id: d.id,
+      label: d.label,
+      done: false,
+    };
+  }),
+});

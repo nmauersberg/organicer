@@ -3,7 +3,7 @@ import { css, styled } from 'twin.macro';
 import { useDexieDb } from '../../../dexie/db';
 import { JustText, SmallTitle } from '../../text';
 
-export function DailyDutyList() {
+export function ListDailyDuty() {
   const [db] = useDexieDb();
   const settings = useLiveQuery(() => db.userSettings.get(1));
 

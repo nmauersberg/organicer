@@ -1,7 +1,7 @@
 import { FadeIn } from 'anima-react';
 import { css, styled } from 'twin.macro';
 import { JustifyBetween } from '../../pages/[[...slug]]';
-import { DailyDuty } from '../duty/daily/DailyDuty';
+import { AppDailyDuty } from '../duty/daily/AppDailyDuty';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
 
@@ -23,7 +23,7 @@ export const Duty = ({ page }: DutyProps) => {
           {page.description !== '' && (
             <SmallTitle>{page.description}</SmallTitle>
           )}
-          <DailyDuty />
+          <AppDailyDuty />
         </DutyContainer>
       </FadeIn>
     </JustifyBetween>
