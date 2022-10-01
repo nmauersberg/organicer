@@ -54,7 +54,7 @@ export const KombiChart = () => {
     },
     stroke: {
       curve: 'smooth',
-      width: [8, 1, 1],
+      width: [6, 1, 1],
     },
     plotOptions: {
       bar: {

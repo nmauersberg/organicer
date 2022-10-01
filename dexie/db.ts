@@ -19,6 +19,11 @@ export type DailyDuty = {
   label: string;
 };
 
+export type Task = {
+  label: string;
+  checked: boolean;
+};
+
 export const defaultUserSettings: UserSettings = {
   id: 1,
   dailyDuty: {
@@ -38,10 +43,22 @@ export interface DailyDuties {
   duties: Duty[];
 }
 
+export interface TaskList {
+  id?: number;
+  date: string;
+  label: string;
+  tasks: Task[];
+  sort: number;
+  type: TaskListType;
+}
+
+export type TaskListType = 'checkable' | 'ordered' | 'unordered';
+
 export class ExtendedDexie extends Dexie {
   userSettings!: Table<UserSettings>;
   journal!: Table<JournalEntry>;
   dailyDuty!: Table<DailyDuties>;
+  taskLists!: Table<TaskList>;
 
   constructor(pubKey: string) {
     super(pubKey);
@@ -58,6 +75,13 @@ export class ExtendedDexie extends Dexie {
       .upgrade(tx => {
         tx.table('userSettings').add(defaultUserSettings);
       });
+
+    this.version(3).stores({
+      userSettings: '++id, settings',
+      journal: '++id, date, content',
+      dailyDuty: '++id, date, duties',
+      taskLists: '++id, date, label, tasks, sort, type',
+    });
 
     this.on('populate', tx => {
       tx.table('userSettings').add(defaultUserSettings);

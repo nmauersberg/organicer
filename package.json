@@ -31,6 +31,7 @@
     "react-apexcharts": "^1.4.0",
     "react-dom": "18.2.0",
     "react-hot-toast": "^2.3.0",
+    "react-select": "^5.4.0",
     "react-spinners": "^0.13.4",
     "react-textarea-autosize": "^8.3.4"
   },

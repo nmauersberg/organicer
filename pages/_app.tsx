@@ -3,7 +3,6 @@ import '../styles/fonts.css';
 import type { AppProps } from 'next/app';
 import { initWebAssembly } from 'p2panda-js';
 import { useContext, useEffect, useState } from 'react';
-
 import {
   EncryptStorageContext,
   EncryptStorageProvider,
@@ -16,12 +15,25 @@ import { SlideButton } from '../components/button/SlideButton';
 import { SmallTitle, Title } from '../components/text';
 import { Toaster } from 'react-hot-toast';
 
-// Initialize p2panda wasm code
-initWebAssembly(); //.then(() => console.log('p2panda initialized'));
-
 type AppState = 'loading' | 'askPin' | 'initialized';
 
 function MyApp(appProps: AppProps) {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    // Initialize p2panda wasm code
+    const init = async () => {
+      await initWebAssembly();
+      setReady(true);
+    };
+
+    init();
+  }, []);
+
+  if (!ready) {
+    return null;
+  }
+
   return (
     <CacheProvider value={cache}>
       <GlobalStyles />
