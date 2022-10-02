@@ -5,6 +5,7 @@ import { Page } from '../menu/MainMenu';
 import { AddJournalEntry } from '../journal/AddEntry';
 import { EntryList } from '../journal/EntryList';
 import { SmallTitle } from '../text';
+import { ScrollableFitContainer } from '../layout/ScrollableFitContainer';
 
 type JournalProps = {
   page: Page;
@@ -13,7 +14,7 @@ type JournalProps = {
 export const Journal = ({ page }: JournalProps) => {
   return (
     <JustifyBetween>
-      <JournalContainer>
+      <ScrollableFitContainer>
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <>
             {page.description !== '' && (
@@ -22,17 +23,10 @@ export const Journal = ({ page }: JournalProps) => {
           </>
           <EntryList />
         </FadeIn>
-      </JournalContainer>
+      </ScrollableFitContainer>
       <FadeIn orientation="up" duration={0.5} delay={0.25} distance={30}>
         <AddJournalEntry />
       </FadeIn>
     </JustifyBetween>
   );
 };
-
-const JournalContainer = styled.div(() => [
-  css`
-    overflow-y: auto;
-    height: 100%;
-  `,
-]);

@@ -76,7 +76,7 @@ export const AppTaskList = () => {
                 <Input
                   value={newTaskLabel}
                   onChange={e => setNewTaskLabel(e.target.value)}
-                  placeholder={'Bezeichnung des neuen Elements'}
+                  placeholder={'Neuen Eintrag hinzufügen'}
                   onKeyPress={e => {
                     if (e.key === 'Enter') {
                       saveNewTask(entry);

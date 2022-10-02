@@ -8,6 +8,7 @@ import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
 import { SlideButton } from '../button/SlideButton';
 import { useState } from 'react';
+import { ScrollableFitContainer } from '../layout/ScrollableFitContainer';
 
 export type Duty = {
   id: string;
@@ -24,15 +25,17 @@ export const Duty = ({ page }: DutyProps) => {
 
   return (
     <JustifyBetween>
-      <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-        <DutyContainer>
-          {page.description !== '' && (
-            <SmallTitle>{page.description}</SmallTitle>
-          )}
+      <ScrollableFitContainer>
+        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+          <>
+            {page.description !== '' && (
+              <SmallTitle>{page.description}</SmallTitle>
+            )}
+          </>
           <AppDailyDuty />
           <AppTaskList />
-        </DutyContainer>
-      </FadeIn>
+        </FadeIn>
+      </ScrollableFitContainer>
       {addList ? (
         <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
           <AddTaskList cancel={() => setAddList(false)} />
@@ -47,11 +50,3 @@ export const Duty = ({ page }: DutyProps) => {
     </JustifyBetween>
   );
 };
-
-const DutyContainer = styled.div(() => [
-  css`
-    overflow-y: auto;
-    height: 100%;
-    width: 100%;
-  `,
-]);
