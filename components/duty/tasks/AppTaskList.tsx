@@ -15,12 +15,38 @@ export const AppTaskList = () => {
   const [db] = useDexieDb();
   const entries_ = useLiveQuery(() => db.taskLists.toArray());
   const entries = entries_ ? entries_.map(mkRequired) : [];
-  const [addEntry, setAddEntry] = useState(false);
-  const [newTaskLabel, setNewTaskLabel] = useState('');
 
   if (!entries_) {
     return <BounceLoader color="red" />;
   }
+
+  return (
+    <div>
+      {entries.map(entry => {
+        return <Entry key={entry.id} entry={entry} />;
+      })}
+    </div>
+  );
+};
+
+type CheckboxProps = {
+  checked: boolean;
+};
+
+const Checkbox = ({ checked }: CheckboxProps): ReactElement => (
+  <div style={{ minWidth: '1.5rem' }}>
+    {checked ? (
+      <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
+    ) : (
+      <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
+    )}
+  </div>
+);
+
+const Entry = ({ entry }: { entry: Required<TaskList> }) => {
+  const [db] = useDexieDb();
+  const [addEntry, setAddEntry] = useState(false);
+  const [newTaskLabel, setNewTaskLabel] = useState('');
 
   const updateTaskList = async (entry: Required<TaskList>) => {
     try {
@@ -42,71 +68,50 @@ export const AppTaskList = () => {
   };
 
   return (
-    <div>
-      {entries.map(entry => {
+    <Entry_ key={entry.id}>
+      <TaskListHead>
+        <SmallTitle>{entry.label}</SmallTitle>
+        <ButtonContainer>
+          <SlideButtonRound onClick={() => setAddEntry(!addEntry)}>
+            {addEntry ? '-' : '+'}
+          </SlideButtonRound>
+        </ButtonContainer>
+      </TaskListHead>
+      <br />
+      {entry.tasks.map((task, index) => {
         return (
-          <Entry key={entry.id}>
-            <TaskListHead>
-              <SmallTitle>{entry.label}</SmallTitle>
-              <ButtonContainer>
-                <SlideButtonRound onClick={() => setAddEntry(!addEntry)}>
-                  {addEntry ? '-' : '+'}
-                </SlideButtonRound>
-              </ButtonContainer>
-            </TaskListHead>
-            <br />
-            {entry.tasks.map((task, index) => {
-              return (
-                <TaskListItem
-                  key={entry.id + index}
-                  onClick={() => {
-                    const modified = { ...entry };
-                    modified.tasks[index].checked =
-                      !modified.tasks[index].checked;
-                    updateTaskList(modified);
-                  }}
-                >
-                  <Checkbox checked={task.checked} />
-                  <JustText>{task.label}</JustText>
-                </TaskListItem>
-              );
-            })}
-            {addEntry && (
-              <>
-                <Input
-                  value={newTaskLabel}
-                  onChange={e => setNewTaskLabel(e.target.value)}
-                  placeholder={'Neuen Eintrag hinzufügen'}
-                  onKeyPress={e => {
-                    if (e.key === 'Enter') {
-                      saveNewTask(entry);
-                    }
-                  }}
-                />
-              </>
-            )}
-          </Entry>
+          <TaskListItem
+            key={entry.id + index}
+            onClick={() => {
+              const modified = { ...entry };
+              modified.tasks[index].checked = !modified.tasks[index].checked;
+              updateTaskList(modified);
+            }}
+          >
+            <Checkbox checked={task.checked} />
+            <JustText>{task.label}</JustText>
+          </TaskListItem>
         );
       })}
-    </div>
+      {addEntry && (
+        <>
+          <Input
+            value={newTaskLabel}
+            onChange={e => setNewTaskLabel(e.target.value)}
+            placeholder={'Neuen Eintrag hinzufügen'}
+            onKeyPress={e => {
+              if (e.key === 'Enter') {
+                saveNewTask(entry);
+              }
+            }}
+          />
+        </>
+      )}
+    </Entry_>
   );
 };
 
-type CheckboxProps = {
-  checked: boolean;
-};
-
-const Checkbox = ({ checked }: CheckboxProps): ReactElement => (
-  <div style={{ minWidth: '1.5rem' }}>
-    {checked ? (
-      <Icon path={mdiCheckCircleOutline} size={1} color={'green'} />
-    ) : (
-      <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
-    )}
-  </div>
-);
-
-export const Entry = styled.div(() => [
+export const Entry_ = styled.div(() => [
   css`
     margin: 0.5rem 0.25rem 0.5rem 0;
     white-space: pre-wrap;
