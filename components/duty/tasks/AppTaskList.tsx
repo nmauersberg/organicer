@@ -1,4 +1,8 @@
-import { mdiCheckboxBlankCircleOutline, mdiCheckCircleOutline } from '@mdi/js';
+import {
+  mdiCheckboxBlankCircleOutline,
+  mdiCheckCircleOutline,
+  mdiDotsHorizontalCircleOutline,
+} from '@mdi/js';
 import Icon from '@mdi/react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { ReactElement, useState } from 'react';
@@ -9,7 +13,7 @@ import { TaskList, useDexieDb } from '../../../dexie/db';
 import { JustText, SmallTitle } from '../../text';
 import { mkRequired } from '../../../dexie/dexie-util';
 import { SlideButtonRound } from '../../button/SlideButtonRound';
-import { SlideButton } from '../../button/SlideButton';
+import { nanoid } from 'nanoid';
 
 export const AppTaskList = () => {
   const [db] = useDexieDb();
@@ -62,34 +66,62 @@ const Entry = ({ entry }: { entry: Required<TaskList> }) => {
     modified.tasks.push({
       label: newTaskLabel,
       checked: false,
+      id: nanoid(),
     });
     updateTaskList(modified);
     setNewTaskLabel('');
   };
 
+  const done = entry.tasks.filter(e => e.checked);
+  const todo = entry.tasks.filter(e => !e.checked);
+
   return (
     <Entry_ key={entry.id}>
       <TaskListHead>
         <SmallTitle>{entry.label}</SmallTitle>
-        <ButtonContainer>
+        {/* <ButtonContainer>
           <SlideButtonRound onClick={() => setAddEntry(!addEntry)}>
             {addEntry ? '-' : '+'}
           </SlideButtonRound>
-        </ButtonContainer>
+        </ButtonContainer> */}
+        <NoStyleButton onClick={() => setAddEntry(!addEntry)}>
+          <Icon
+            path={mdiDotsHorizontalCircleOutline}
+            size={1.5}
+            color={'#53a2be'}
+          />
+        </NoStyleButton>
       </TaskListHead>
       <br />
-      {entry.tasks.map((task, index) => {
+      {todo.map(task => {
         return (
           <TaskListItem
-            key={entry.id + index}
+            key={task.id}
             onClick={() => {
               const modified = { ...entry };
+              const index = modified.tasks.findIndex(t => t.id === task.id);
               modified.tasks[index].checked = !modified.tasks[index].checked;
               updateTaskList(modified);
             }}
           >
             <Checkbox checked={task.checked} />
             <JustText>{task.label}</JustText>
+          </TaskListItem>
+        );
+      })}
+      {done.map(task => {
+        return (
+          <TaskListItem
+            key={task.id}
+            onClick={() => {
+              const modified = { ...entry };
+              const index = modified.tasks.findIndex(t => t.id === task.id);
+              modified.tasks[index].checked = !modified.tasks[index].checked;
+              updateTaskList(modified);
+            }}
+          >
+            <Checkbox checked={task.checked} />
+            <JustText textDecoration={['line-through']}>{task.label}</JustText>
           </TaskListItem>
         );
       })}
@@ -132,8 +164,18 @@ export const TaskListHead = styled.div(() => [
     justify-content: space-between;
     width: 100%;
     overflow-x: hiden;
-    padding-right: 5rem;
+    padding-right: 1rem;
     position: relative;
+  `,
+]);
+
+export const NoStyleButton = styled.button(() => [
+  css`
+    padding: 0;
+    margin: 0;
+    outline: none;
+    border: none;
+    cursor: pointer;
   `,
 ]);
 

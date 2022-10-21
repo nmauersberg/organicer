@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import { Duty } from '../components/views/Duty';
 import { EncryptStorageContext } from '../context/encryptStorage';
 import { Settings } from '../components/views/Settings';
+import { nanoid } from 'nanoid';
 
 export interface UserSettings {
   id?: number;
@@ -20,6 +21,7 @@ export type DailyDuty = {
 };
 
 export type Task = {
+  id: string;
   label: string;
   checked: boolean;
 };
@@ -82,6 +84,24 @@ export class ExtendedDexie extends Dexie {
       dailyDuty: '++id, date, duties',
       taskLists: '++id, date, label, tasks, sort, type',
     });
+
+    this.version(4)
+      .stores({
+        userSettings: '++id, settings',
+        journal: '++id, date, content',
+        dailyDuty: '++id, date, duties',
+        taskLists: '++id, date, label, tasks, sort, type',
+      })
+      .upgrade(tx => {
+        return tx
+          .table('taskLists')
+          .toCollection()
+          .modify(taskList => {
+            taskList.tasks.forEach((task: Task) => {
+              task.id = nanoid();
+            });
+          });
+      });
 
     this.on('populate', tx => {
       tx.table('userSettings').add(defaultUserSettings);

@@ -23,12 +23,28 @@ export const DateText = styled.p(() => [
   `,
 ]);
 
+type TextDecoration =
+  | 'overline'
+  | 'line-through'
+  | 'underline'
+  | 'underline overline';
+
 type JustTextProps = {
   size?: number;
+  textDecoration?: TextDecoration[];
 };
 
-export const JustText = styled.p<JustTextProps>(({ size = 1 }) => [
-  css`
-    font-size: ${size}rem;
-  `,
-]);
+export const JustText = styled.p<JustTextProps>(
+  ({ size = 1, textDecoration }) => {
+    const textDecorations = textDecoration
+      ? textDecoration.map(t => `text-decoration: ${t};`).join('ln')
+      : '';
+
+    return [
+      css`
+        font-size: ${size}rem;
+        ${textDecorations}
+      `,
+    ];
+  },
+);
