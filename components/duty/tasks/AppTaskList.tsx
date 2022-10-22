@@ -92,7 +92,22 @@ const Entry = ({ entry }: { entry: Required<TaskList> }) => {
           />
         </NoStyleButton>
       </TaskListHead>
-      <br />
+      {addEntry ? (
+        <AddEntryRow>
+          <Input
+            value={newTaskLabel}
+            onChange={e => setNewTaskLabel(e.target.value)}
+            placeholder={'Neuen Eintrag hinzufügen'}
+            onKeyPress={e => {
+              if (e.key === 'Enter') {
+                saveNewTask(entry);
+              }
+            }}
+          />
+        </AddEntryRow>
+      ) : (
+        <br />
+      )}
       {todo.map(task => {
         return (
           <TaskListItem
@@ -125,20 +140,6 @@ const Entry = ({ entry }: { entry: Required<TaskList> }) => {
           </TaskListItem>
         );
       })}
-      {addEntry && (
-        <>
-          <Input
-            value={newTaskLabel}
-            onChange={e => setNewTaskLabel(e.target.value)}
-            placeholder={'Neuen Eintrag hinzufügen'}
-            onKeyPress={e => {
-              if (e.key === 'Enter') {
-                saveNewTask(entry);
-              }
-            }}
-          />
-        </>
-      )}
     </Entry_>
   );
 };
@@ -176,6 +177,12 @@ export const NoStyleButton = styled.button(() => [
     outline: none;
     border: none;
     cursor: pointer;
+  `,
+]);
+
+export const AddEntryRow = styled.div(() => [
+  css`
+    margin-bottom: 1rem;
   `,
 ]);
 
