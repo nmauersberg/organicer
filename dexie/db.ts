@@ -3,19 +3,28 @@ import { KeyPair } from 'p2panda-js';
 import { useContext, useState } from 'react';
 import { Duty } from '../components/views/Duty';
 import { EncryptStorageContext } from '../context/encryptStorage';
-import { Settings } from '../components/views/Settings';
 import { nanoid } from 'nanoid';
 
 export interface UserSettings {
   id?: number;
-  dailyDuty: Settings;
+  dailyDuty: DailyDutySettings;
+  sports: SportsSettings;
 }
 
-export type Settings = {
+export type DailyDutySettings = {
   duties: DailyDuty[];
 };
 
+export type SportsSettings = {
+  exercises: Exercise[];
+};
+
 export type DailyDuty = {
+  id: string;
+  label: string;
+};
+
+export type Exercise = {
   id: string;
   label: string;
 };
@@ -30,6 +39,9 @@ export const defaultUserSettings: UserSettings = {
   id: 1,
   dailyDuty: {
     duties: [],
+  },
+  sports: {
+    exercises: [],
   },
 };
 
@@ -56,11 +68,31 @@ export interface TaskList {
 
 export type TaskListType = 'checkable' | 'ordered' | 'unordered';
 
+export interface SportSession {
+  id?: number;
+  date: string;
+  rounds: Round[];
+}
+
+export type Round = {
+  id: string;
+  exercises: ExerciseRound[];
+};
+
+export type ExerciseRound = {
+  exerciseId: string;
+  count: number;
+  type: ExerciseType;
+};
+
+export type ExerciseType = 'repetitions' | 'minutes';
+
 export class ExtendedDexie extends Dexie {
   userSettings!: Table<UserSettings>;
   journal!: Table<JournalEntry>;
   dailyDuty!: Table<DailyDuties>;
   taskLists!: Table<TaskList>;
+  sports!: Table<SportSession>;
 
   constructor(pubKey: string) {
     super(pubKey);
@@ -100,6 +132,25 @@ export class ExtendedDexie extends Dexie {
             taskList.tasks.forEach((task: Task) => {
               task.id = nanoid();
             });
+          });
+      });
+
+    this.version(5)
+      .stores({
+        userSettings: '++id, settings',
+        journal: '++id, date, content',
+        dailyDuty: '++id, date, duties',
+        taskLists: '++id, date, label, tasks, sort, type',
+        sports: '++id, date, rounds',
+      })
+      .upgrade(tx => {
+        return tx
+          .table('userSettings')
+          .toCollection()
+          .modify(userSettings => {
+            if (!('sports' in userSettings)) {
+              userSettings.sports = defaultUserSettings.sports;
+            }
           });
       });
 
