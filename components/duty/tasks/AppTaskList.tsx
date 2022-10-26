@@ -1,4 +1,5 @@
 import {
+  mdiArchiveCheckOutline,
   mdiCheckboxBlankCircleOutline,
   mdiCheckCircleOutline,
   mdiDotsHorizontalCircleOutline,
@@ -67,12 +68,28 @@ const Entry = ({ entry }: { entry: Required<TaskList> }) => {
       label: newTaskLabel,
       checked: false,
       id: nanoid(),
+      archived: false,
     });
     updateTaskList(modified);
     setNewTaskLabel('');
   };
 
-  const done = entry.tasks.filter(e => e.checked);
+  const archiveDone = async (entry: Required<TaskList>) => {
+    const toUpdate = [...entry.tasks];
+    toUpdate.forEach(t => {
+      if (t.checked && !t.archived) {
+        t.archived = true;
+      }
+    });
+    try {
+      await db.taskLists.update(entry.id, { ...entry, tasks: toUpdate });
+      toast.success('Erledigte Tasks archiviert!');
+    } catch (error) {
+      toast.error('Tasks konnten nicht archiviert werden!');
+    }
+  };
+
+  const done = entry.tasks.filter(e => e.checked && !e.archived);
   const todo = entry.tasks.filter(e => !e.checked);
 
   return (
@@ -84,6 +101,12 @@ const Entry = ({ entry }: { entry: Required<TaskList> }) => {
             {addEntry ? '-' : '+'}
           </SlideButtonRound>
         </ButtonContainer> */}
+        <Spacer />
+        {entry.tasks.some(x => x.checked && !x.archived) && (
+          <NoStyleButton onClick={() => archiveDone(entry)}>
+            <Icon path={mdiArchiveCheckOutline} size={1.5} color={'#53a2be'} />
+          </NoStyleButton>
+        )}
         <NoStyleButton onClick={() => setAddEntry(!addEntry)}>
           <Icon
             path={mdiDotsHorizontalCircleOutline}
@@ -197,5 +220,11 @@ export const ButtonContainer = styled.div(() => [
 const Input = styled.input(() => [
   css`
     margin-top: 1rem;
+  `,
+]);
+
+export const Spacer = styled.div(() => [
+  css`
+    flex-grow: 1;
   `,
 ]);

@@ -6,6 +6,9 @@ import { ManageDB } from './ManageDB';
 import { AddDailyDuty } from '../duty/daily/AddDailyDuty';
 import { Title } from '../text';
 import { css, styled } from 'twin.macro';
+import { AddExercise } from '../sports/AddExercise';
+import { ListExercises } from '../sports/ListExercises';
+import { ScrollableFitContainer } from '../layout/ScrollableFitContainer';
 
 export const Settings = () => {
   const [dbImportExportPage, setDbImportExportPage] = useState(false);
@@ -16,21 +19,30 @@ export const Settings = () => {
 
   return (
     <SettingsContainer>
-      <SettingsElement>
-        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-          <Title>Datenbankverwaltung:</Title>
-          <SlideButton onClick={() => setDbImportExportPage(true)}>
-            Datenbank Import/Export
-          </SlideButton>
-        </FadeIn>
-      </SettingsElement>
-      <SettingsElement>
-        <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
-          <Title>Täglche Aufgaben:</Title>
-          <ListDailyDuty />
-          <AddDailyDuty />
-        </FadeIn>
-      </SettingsElement>
+      <ScrollableFitContainer>
+        <SettingsElement>
+          <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+            <Title>Datenbankverwaltung:</Title>
+            <SlideButton onClick={() => setDbImportExportPage(true)}>
+              Datenbank Import/Export
+            </SlideButton>
+          </FadeIn>
+        </SettingsElement>
+        <SettingsElement>
+          <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+            <Title>Täglche Aufgaben:</Title>
+            <ListDailyDuty />
+            <AddDailyDuty />
+          </FadeIn>
+        </SettingsElement>
+        <SettingsElement>
+          <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+            <Title>Übungen:</Title>
+            <ListExercises />
+            <AddExercise />
+          </FadeIn>
+        </SettingsElement>
+      </ScrollableFitContainer>
     </SettingsContainer>
   );
 };

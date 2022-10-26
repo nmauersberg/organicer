@@ -1,9 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import { css, styled } from 'twin.macro';
-import { useDexieDb } from '../../../dexie/db';
-import { JustText, SmallTitle } from '../../text';
+import { useDexieDb } from '../../dexie/db';
+import { JustText, SmallTitle } from '../text';
 
-export function ListDailyDuty() {
+export function ListExercises() {
   const [db] = useDexieDb();
   const settings = useLiveQuery(() => db.userSettings.get(1));
 
@@ -13,15 +13,15 @@ export function ListDailyDuty() {
 
   return (
     <div>
-      <SmallTitle>Deine täglichen Aufgaben:</SmallTitle>
-      {settings.dailyDuty && settings.dailyDuty.duties[0] ? (
+      <SmallTitle>Deine Übungen:</SmallTitle>
+      {settings.sports && settings.sports.exercises[0] ? (
         <Entry>
-          {settings.dailyDuty.duties.map(duty => {
-            return <JustText key={duty.id}>{duty.label}</JustText>;
+          {settings.sports.exercises.map(exercise => {
+            return <JustText key={exercise.id}>{exercise.label}</JustText>;
           })}
         </Entry>
       ) : (
-        <JustText>Du hast noch keine täglichen Aufgaben angelegt.</JustText>
+        <JustText>Du hast noch keine Übungen angelegt.</JustText>
       )}
     </div>
   );

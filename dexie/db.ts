@@ -33,6 +33,7 @@ export type Task = {
   id: string;
   label: string;
   checked: boolean;
+  archived: boolean;
 };
 
 export const defaultUserSettings: UserSettings = {
@@ -144,13 +145,17 @@ export class ExtendedDexie extends Dexie {
         sports: '++id, date, rounds',
       })
       .upgrade(tx => {
-        return tx
-          .table('userSettings')
+        tx.table('userSettings')
           .toCollection()
           .modify(userSettings => {
             if (!('sports' in userSettings)) {
               userSettings.sports = defaultUserSettings.sports;
             }
+          });
+        tx.table('taskLists')
+          .toCollection()
+          .modify(taskList => {
+            taskList.tasks.forEach((x: Task) => (x.archived = false));
           });
       });
 
