@@ -15,6 +15,8 @@ import { JustText, SmallTitle } from '../../text';
 import { mkRequired } from '../../../dexie/dexie-util';
 import { SlideButtonRound } from '../../button/SlideButtonRound';
 import { nanoid } from 'nanoid';
+import { Spacer } from '../../helper';
+import { NoStyleButton } from '../../button/NoStyleButton';
 
 export const AppTaskList = () => {
   const [db] = useDexieDb();
@@ -193,16 +195,6 @@ export const TaskListHead = styled.div(() => [
   `,
 ]);
 
-export const NoStyleButton = styled.button(() => [
-  css`
-    padding: 0;
-    margin: 0;
-    outline: none;
-    border: none;
-    cursor: pointer;
-  `,
-]);
-
 export const AddEntryRow = styled.div(() => [
   css`
     margin-bottom: 1rem;
@@ -220,11 +212,5 @@ export const ButtonContainer = styled.div(() => [
 const Input = styled.input(() => [
   css`
     margin-top: 1rem;
-  `,
-]);
-
-export const Spacer = styled.div(() => [
-  css`
-    flex-grow: 1;
   `,
 ]);

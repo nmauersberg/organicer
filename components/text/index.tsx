@@ -32,10 +32,11 @@ type TextDecoration =
 type JustTextProps = {
   size?: number;
   textDecoration?: TextDecoration[];
+  bottomMargin?: number;
 };
 
 export const JustText = styled.p<JustTextProps>(
-  ({ size = 1, textDecoration }) => {
+  ({ size = 1, textDecoration, bottomMargin = 1 }) => {
     const textDecorations = textDecoration
       ? textDecoration.map(t => `text-decoration: ${t};`).join('ln')
       : '';
@@ -43,6 +44,7 @@ export const JustText = styled.p<JustTextProps>(
     return [
       css`
         font-size: ${size}rem;
+        margin-bottom: ${bottomMargin}rem;
         ${textDecorations}
       `,
     ];

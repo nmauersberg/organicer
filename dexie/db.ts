@@ -86,7 +86,7 @@ export type ExerciseRound = {
   type: ExerciseType;
 };
 
-export type ExerciseType = 'repetitions' | 'minutes';
+export type ExerciseType = 'count' | 'minutes';
 
 export class ExtendedDexie extends Dexie {
   userSettings!: Table<UserSettings>;
