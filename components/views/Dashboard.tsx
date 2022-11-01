@@ -2,6 +2,7 @@ import { FadeIn } from 'anima-react';
 import { KombiChart } from '../charts/KombiChart';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
+import { HeatmapTasks } from '../charts/HeatmapTasks';
 
 type DashboardProps = {
   page: Page;
@@ -14,6 +15,7 @@ export const Dashboard = ({ page }: DashboardProps) => {
         {page.description !== '' && <SmallTitle>{page.description}</SmallTitle>}
       </>
       <KombiChart />
+      <HeatmapTasks />
     </FadeIn>
   );
 };

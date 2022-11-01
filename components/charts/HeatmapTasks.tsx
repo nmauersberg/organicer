@@ -5,7 +5,7 @@ import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
 
-export const KombiChart = () => {
+export const HeatmapTasks = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
@@ -21,6 +21,16 @@ export const KombiChart = () => {
 
   const dates = getDates([...journalDates, ...dailyDutyDates, new Date()]);
 
+  const getDataDailyDutiesDone = (id: string) =>
+    Object.keys(dates).map(k => {
+      const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
+
+      return {
+        x: new Date(k).getTime(),
+        y: dde?.duties.some(d => d.done && d.id === id) ? 3 : 1,
+      };
+    });
+
   journalEntries.forEach(e => {
     const entryCount = dates[new Date(e.date).toDateString()];
     dates[new Date(e.date).toDateString()] =
@@ -34,102 +44,66 @@ export const KombiChart = () => {
 
   const max = Math.max(...dataJournal.map(o => o.y));
 
+  const colors = ['#db5461', '#53a2be', '#26c485'];
+
   const options: ApexOptions = {
-    colors: ['#db5461', '#53a2be', '#26c485'],
+    colors,
     xaxis: {
       type: 'category',
       labels: {
-        formatter: val =>
-          new Date(val)
-            .toLocaleString('de-DE', { weekday: 'long' })
-            .substring(0, 2),
+        formatter: () => '',
       },
     },
-    yaxis: {
-      min: 0,
-      max: max + 1,
-      labels: {
-        formatter: val => Math.round(val).toString(),
-      },
+    dataLabels: {
+      enabled: false,
     },
-    stroke: {
-      curve: 'smooth',
-      width: [6, 1, 1],
+    tooltip: {
+      enabled: false,
     },
-    plotOptions: {
-      bar: {
-        columnWidth: '25%',
-      },
+    legend: {
+      height: 0,
     },
     chart: {
       toolbar: {
         show: false,
       },
+      sparkline: {
+        enabled: true,
+      },
     },
   };
 
-  const dataDailyDutiesGoal = Object.keys(dates).map(k => {
-    const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
-
-    if (
-      !dailyDutyEntries.some(e => {
-        return removeTime(new Date(e.date)) <= removeTime(new Date(k));
-      })
-    ) {
-      return {
-        x: new Date(k).getTime(),
-        y: 0,
-      };
-    }
-
-    return {
-      x: new Date(k).getTime(),
-      y: dde?.duties.length || settings.dailyDuty.duties.length,
-    };
-  });
-
-  const dataDailyDutiesDone = Object.keys(dates).map(k => {
-    const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
-
-    return {
-      x: new Date(k).getTime(),
-      y: dde?.duties.filter(d => d.done).length || 0,
-    };
-  });
-
-  const series = [
-    {
-      name: 'Tagebuch',
-      data: dataJournal,
-      type: 'line',
-    },
-    {
-      name: 'Ziele',
-      type: 'column',
-      stacked: false,
-      data: dataDailyDutiesGoal,
-    },
-    {
-      name: 'Done',
-      type: 'column',
-      stacked: false,
-      data: dataDailyDutiesDone,
-    },
-  ];
+  const series = settings.dailyDuty.duties.map(d => ({
+    name: d.label,
+    data: getDataDailyDutiesDone(d.id),
+  }));
 
   return (
-    <Chart
-      options={options}
-      series={series}
-      type="line"
-      width={
-        width > 850
-          ? '800'
-          : width > 500
-          ? (width - 50).toString()
-          : (width - 20).toString()
-      }
-    />
+    <>
+      {series.map((s, index) => {
+        return (
+          <Chart
+            key={index}
+            options={{ ...options, colors: [colors[index]] }}
+            series={[
+              {
+                data: s.data,
+                name: s.name,
+              },
+            ]}
+            type="heatmap"
+            height="20px"
+            width={
+              width > 850
+                ? '800'
+                : width > 500
+                ? (width - 50).toString()
+                : (width - 20).toString()
+            }
+          />
+        );
+      })}
+    </>
   );
 };
 

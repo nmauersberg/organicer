@@ -130,7 +130,7 @@ export default Home;
 
 const Frame = styled.div(() => [
   css`
-    height: 100vh;
+    min-height: 100vh;
     min-width: 50vw;
     padding: 6rem 1rem 2rem 1rem;
     flex: 1;
