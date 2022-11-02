@@ -58,7 +58,20 @@ export const HeatmapTasks = () => {
       enabled: false,
     },
     tooltip: {
-      enabled: false,
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        const html = `
+        <div style="padding: 0.5rem;">
+          <span>
+            <b>
+              ${w.globals.seriesNames[seriesIndex]}
+            </b>
+          </span>
+          <br/>
+        </div>
+        `;
+
+        return html;
+      },
     },
     legend: {
       height: 0,
@@ -79,32 +92,48 @@ export const HeatmapTasks = () => {
   }));
 
   return (
-    <>
-      {series.map((s, index) => {
-        return (
-          <Chart
-            key={index}
-            options={{ ...options, colors: [colors[index]] }}
-            series={[
-              {
-                data: s.data,
-                name: s.name,
-              },
-            ]}
-            type="heatmap"
-            height="20px"
-            width={
-              width > 850
-                ? '800'
-                : width > 500
-                ? (width - 50).toString()
-                : (width - 20).toString()
-            }
-          />
-        );
-      })}
-    </>
+    <Chart
+      options={options}
+      series={series}
+      type="heatmap"
+      height={`${series.length * 15}px`}
+      width={
+        width > 850
+          ? '800'
+          : width > 500
+          ? (width - 50).toString()
+          : (width - 20).toString()
+      }
+    />
   );
+
+  // return (
+  //   <>
+  //     {series.map((s, index) => {
+  //       return (
+  //         <Chart
+  //           key={index}
+  //           options={{ ...options, colors: [colors[index]] }}
+  //           series={[
+  //             {
+  //               data: s.data,
+  //               name: s.name,
+  //             },
+  //           ]}
+  //           type="heatmap"
+  //           height="20px"
+  //           width={
+  //             width > 850
+  //               ? '800'
+  //               : width > 500
+  //               ? (width - 50).toString()
+  //               : (width - 20).toString()
+  //           }
+  //         />
+  //       );
+  //     })}
+  //   </>
+  // );
 };
 
 const compareDates = (date1: string | Date, date2: string | Date): boolean => {

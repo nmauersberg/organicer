@@ -36,13 +36,59 @@ export const KombiChart = () => {
 
   const options: ApexOptions = {
     colors: ['#db5461', '#53a2be', '#26c485'],
+    tooltip: {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        const html = `
+        <div style="padding: 0.5rem;">
+          <span>
+            <b>
+              ${new Date(w.globals.labels[dataPointIndex]).toLocaleString(
+                'de-DE',
+                {
+                  weekday: 'long',
+                },
+              )}
+            </b>
+          </span>
+          <br/>
+          
+          <span>
+            ${w.globals.seriesNames[0]}${': '} 
+            ${w.globals.series[0][dataPointIndex]}
+          </span>
+          <br/>
+
+          <span>
+            ${w.globals.seriesNames[2]}${': '} 
+            ${w.globals.series[2][dataPointIndex]}
+            ${
+              w.globals.series[1]
+                ? ` / ${w.globals.series[1][dataPointIndex]}`
+                : ''
+            }
+          </span>
+        </div>
+        `;
+
+        return html;
+      },
+    },
     xaxis: {
       type: 'category',
-      labels: {
+      tooltip: {
+        enabled: false,
         formatter: val =>
           new Date(val)
             .toLocaleString('de-DE', { weekday: 'long' })
             .substring(0, 2),
+      },
+      labels: {
+        formatter: val => {
+          const weekday = new Date(val)
+            .toLocaleString('de-DE', { weekday: 'long' })
+            .substring(0, 2);
+          return weekday === 'Mo' ? weekday : '';
+        },
       },
     },
     yaxis: {
