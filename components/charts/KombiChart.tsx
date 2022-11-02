@@ -91,11 +91,18 @@ export const KombiChart = () => {
         },
       },
     },
+    grid: {
+      padding: {
+        left: -15,
+        right: 0,
+      },
+    },
     yaxis: {
       min: 0,
       max: max + 1,
       labels: {
-        formatter: val => Math.round(val).toString(),
+        show: false,
+        // formatter: val => Math.round(val).toString(),
       },
     },
     stroke: {

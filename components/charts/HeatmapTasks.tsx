@@ -48,18 +48,8 @@ export const HeatmapTasks = () => {
 
   const options: ApexOptions = {
     colors,
-    xaxis: {
-      type: 'category',
-      labels: {
-        formatter: () => '',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
     tooltip: {
-      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-        const html = `
+      custom: ({ series, seriesIndex, dataPointIndex, w }) => `
         <div style="padding: 0.5rem;">
           <span>
             <b>
@@ -68,10 +58,7 @@ export const HeatmapTasks = () => {
           </span>
           <br/>
         </div>
-        `;
-
-        return html;
-      },
+      `,
     },
     chart: {
       toolbar: {
@@ -103,34 +90,6 @@ export const HeatmapTasks = () => {
       }
     />
   );
-
-  // return (
-  //   <>
-  //     {series.map((s, index) => {
-  //       return (
-  //         <Chart
-  //           key={index}
-  //           options={{ ...options, colors: [colors[index]] }}
-  //           series={[
-  //             {
-  //               data: s.data,
-  //               name: s.name,
-  //             },
-  //           ]}
-  //           type="heatmap"
-  //           height="20px"
-  //           width={
-  //             width > 850
-  //               ? '800'
-  //               : width > 500
-  //               ? (width - 50).toString()
-  //               : (width - 20).toString()
-  //           }
-  //         />
-  //       );
-  //     })}
-  //   </>
-  // );
 };
 
 const compareDates = (date1: string | Date, date2: string | Date): boolean => {

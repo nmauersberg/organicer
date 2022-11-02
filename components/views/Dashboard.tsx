@@ -14,9 +14,13 @@ export const Dashboard = ({ page }: DashboardProps) => {
       <>
         {page.description !== '' && <SmallTitle>{page.description}</SmallTitle>}
       </>
-      <KombiChart />
-      <br />
-      <HeatmapTasks />
+      <FadeIn orientation="up" duration={0.5} delay={0} distance={30}>
+        <KombiChart />
+      </FadeIn>
+      <FadeIn orientation="up" duration={0.5} delay={0.75} distance={30}>
+        <br />
+        <HeatmapTasks />
+      </FadeIn>
     </FadeIn>
   );
 };
