@@ -44,7 +44,7 @@ export const HeatmapTasks = () => {
 
   const max = Math.max(...dataJournal.map(o => o.y));
 
-  const colors = ['#db5461', '#53a2be', '#26c485'];
+  const colors = ['#FF934F', '#35A7FF', '#A5CC6B'];
 
   const options: ApexOptions = {
     colors,
@@ -72,9 +72,6 @@ export const HeatmapTasks = () => {
 
         return html;
       },
-    },
-    legend: {
-      height: 0,
     },
     chart: {
       toolbar: {
