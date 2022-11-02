@@ -4,6 +4,7 @@ import { ApexOptions } from 'apexcharts';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
+import { CustomLegend, LegendElement } from './CustomLegend';
 
 export const KombiChart = () => {
   const [db] = useDexieDb();
@@ -34,8 +35,13 @@ export const KombiChart = () => {
 
   const max = Math.max(...dataJournal.map(o => o.y));
 
+  const colors = ['#db5461', '#53a2be', '#26c485'];
+
   const options: ApexOptions = {
-    colors: ['#db5461', '#53a2be', '#26c485'],
+    colors,
+    legend: {
+      show: false,
+    },
     tooltip: {
       custom: function ({ series, seriesIndex, dataPointIndex, w }) {
         const html = `
@@ -171,18 +177,36 @@ export const KombiChart = () => {
   ];
 
   return (
-    <Chart
-      options={options}
-      series={series}
-      type="line"
-      width={
-        width > 850
-          ? '800'
-          : width > 500
-          ? (width - 50).toString()
-          : (width - 20).toString()
-      }
-    />
+    <>
+      <Chart
+        options={options}
+        series={series}
+        type="line"
+        width={
+          width > 850
+            ? '800'
+            : width > 500
+            ? (width - 50).toString()
+            : (width - 20).toString()
+        }
+      />
+      <CustomLegend>
+        {[...series].map((s, i) => (
+          <LegendElement key={i}>
+            <span
+              className="apexcharts-legend-marker"
+              style={{
+                backgroundColor: colors[i],
+                width: '12px',
+                height: '12px',
+                borderRadius: '12px',
+              }}
+            />
+            <span className="apexcharts-legend-text">{s.name}</span>
+          </LegendElement>
+        ))}
+      </CustomLegend>
+    </>
   );
 };
 

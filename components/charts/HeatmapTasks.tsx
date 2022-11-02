@@ -4,11 +4,12 @@ import { ApexOptions } from 'apexcharts';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
+import { css, styled } from 'twin.macro';
+import { CustomLegend, LegendElement } from './CustomLegend';
 
 export const HeatmapTasks = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
-  const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
 
@@ -16,10 +17,9 @@ export const HeatmapTasks = () => {
     return <></>;
   }
 
-  const journalDates = mapDates(journalEntries);
   const dailyDutyDates = mapDates(dailyDutyEntries);
 
-  const dates = getDates([...journalDates, ...dailyDutyDates, new Date()]);
+  const dates = getDates([...dailyDutyDates, new Date()]);
 
   const getDataDailyDutiesDone = (id: string) =>
     Object.keys(dates).map(k => {
@@ -30,19 +30,6 @@ export const HeatmapTasks = () => {
         y: dde?.duties.some(d => d.done && d.id === id) ? 3 : 1,
       };
     });
-
-  journalEntries.forEach(e => {
-    const entryCount = dates[new Date(e.date).toDateString()];
-    dates[new Date(e.date).toDateString()] =
-      typeof entryCount === 'number' ? entryCount + 1 : 1;
-  });
-
-  const dataJournal = Object.keys(dates).map(k => ({
-    x: new Date(k).getTime(),
-    y: dates[k],
-  }));
-
-  const max = Math.max(...dataJournal.map(o => o.y));
 
   const colors = ['#FF934F', '#35A7FF', '#A5CC6B'];
 
@@ -76,19 +63,38 @@ export const HeatmapTasks = () => {
   }));
 
   return (
-    <Chart
-      options={options}
-      series={series}
-      type="heatmap"
-      height={`${series.length * 15}px`}
-      width={
-        width > 850
-          ? '800'
-          : width > 500
-          ? (width - 50).toString()
-          : (width - 20).toString()
-      }
-    />
+    <>
+      <Chart
+        options={options}
+        series={series}
+        type="heatmap"
+        height={`${series.length * 15}px`}
+        width={
+          width > 850
+            ? '800'
+            : width > 500
+            ? (width - 50).toString()
+            : (width - 20).toString()
+        }
+      />
+      <br />
+      <CustomLegend>
+        {[...series].map((s, i) => (
+          <LegendElement key={i}>
+            <span
+              className="apexcharts-legend-marker"
+              style={{
+                backgroundColor: colors[i],
+                width: '12px',
+                height: '12px',
+                borderRadius: '12px',
+              }}
+            />
+            <span className="apexcharts-legend-text">{s.name}</span>
+          </LegendElement>
+        ))}
+      </CustomLegend>
+    </>
   );
 };
 
