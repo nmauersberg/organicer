@@ -12,6 +12,7 @@ import {
 } from './CustomLegend';
 import { useState } from 'react';
 import { removeTime, compareDates, mapDates, getDates } from './util';
+import { colors } from '../../styles/colors';
 
 type KombiChartProps = {
   limit?: number;
@@ -52,10 +53,10 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
 
   const max = Math.max(...dataJournal.map(o => o.y));
 
-  const colors = ['#db5461', '#53a2be', '#26c485'];
+  const chartColors = [colors.red, colors.blue, colors.green];
 
   const options: ApexOptions = {
-    colors,
+    colors: chartColors,
     legend: {
       show: false,
     },
@@ -119,6 +120,7 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
         left: -25,
         right: 0,
         bottom: -10,
+        top: -20,
       },
     },
     yaxis: {
@@ -219,7 +221,7 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
       <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
         {series.map((s, i) => (
           <LegendElement key={i}>
-            <LegendMarker color={colors[i]} />
+            <LegendMarker color={chartColors[i]} />
             <LegendText>{s.name}</LegendText>
           </LegendElement>
         ))}

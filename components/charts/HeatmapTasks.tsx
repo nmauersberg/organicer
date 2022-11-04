@@ -12,6 +12,7 @@ import {
 } from './CustomLegend';
 import { useState } from 'react';
 import { compareDates, getDates, mapDates } from './util';
+import { colors } from '../../styles/colors';
 
 type HeatmapTasksProps = {
   limit?: number;
@@ -42,10 +43,10 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
       };
     });
 
-  const colors = ['#FF934F', '#35A7FF', '#A5CC6B'];
+  const chartColors = [colors.orange, colors.petrol, colors.lime];
 
   const options: ApexOptions = {
-    colors,
+    colors: chartColors,
     tooltip: {
       custom: ({ series, seriesIndex, dataPointIndex, w }) => `
         <div style="padding: 0.5rem;">
@@ -99,7 +100,7 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
       <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
         {series.map((s, i) => (
           <LegendElement key={i}>
-            <LegendMarker color={colors[i]} />
+            <LegendMarker color={chartColors[i]} />
             <LegendText>{s.name}</LegendText>
           </LegendElement>
         ))}
