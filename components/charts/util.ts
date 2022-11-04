@@ -32,3 +32,8 @@ const getDatesInRange = (startDate: Date, endDate: Date) => {
 export const removeTime = (date = new Date()) => {
   return new Date(date.toDateString());
 };
+
+export const addHours = (date: Date, h: number) => {
+  date.setTime(date.getTime() + h * 60 * 60 * 1000);
+  return date;
+};

@@ -11,11 +11,12 @@ import {
   LegendText,
 } from './CustomLegend';
 import { useState } from 'react';
-import { removeTime, compareDates, mapDates, getDates } from './util';
+import { removeTime, compareDates, mapDates, getDates, addHours } from './util';
 import { colors } from '../../styles/colors';
+import { ChartRange, WEEK_LIMIT } from '../views/Dashboard';
 
 type KombiChartProps = {
-  limit?: number;
+  limit?: ChartRange;
 };
 
 export const KombiChart = ({ limit }: KombiChartProps) => {
@@ -66,12 +67,15 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
         <div style="padding: 0.5rem;">
           <span>
             <b>
-              ${new Date(w.globals.labels[dataPointIndex]).toLocaleString(
-                'de-DE',
-                {
-                  weekday: 'long',
-                },
-              )}
+              ${addHours(
+                new Date(w.globals.labels[dataPointIndex]),
+                12,
+              ).toLocaleString('de-DE', {
+                weekday: 'long',
+              })}, ${addHours(
+          new Date(w.globals.labels[dataPointIndex]),
+          12,
+        ).toLocaleDateString('de-DE')}
             </b>
           </span>
           <br/>
@@ -102,16 +106,20 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
       tooltip: {
         enabled: false,
         formatter: val =>
-          new Date(val)
+          addHours(new Date(val), 12)
             .toLocaleString('de-DE', { weekday: 'long' })
             .substring(0, 2),
       },
       labels: {
         formatter: val => {
-          const weekday = new Date(val)
+          const weekday = addHours(new Date(val), 12)
             .toLocaleString('de-DE', { weekday: 'long' })
             .substring(0, 2);
-          return weekday === 'Mo' ? weekday : '';
+          return weekday === 'Mo'
+            ? weekday
+            : limit === WEEK_LIMIT
+            ? weekday
+            : '';
         },
       },
     },

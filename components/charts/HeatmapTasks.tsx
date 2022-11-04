@@ -13,9 +13,10 @@ import {
 import { useState } from 'react';
 import { compareDates, getDates, mapDates } from './util';
 import { colors } from '../../styles/colors';
+import { ChartRange } from '../views/Dashboard';
 
 type HeatmapTasksProps = {
-  limit?: number;
+  limit?: ChartRange;
 };
 
 export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {

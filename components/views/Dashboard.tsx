@@ -14,14 +14,34 @@ import {
 import { css, styled } from 'twin.macro';
 import { colors } from '../../styles/colors';
 
-type ChartRange = 7 | 31 | undefined;
+// -----------------------------------------------------------------------------
+// Types
+// -----------------------------------------------------------------------------
+
+export type ChartRange = WeekLimit | MonthLimit | undefined;
+
+export type WeekLimit = 6;
+
+export type MonthLimit = 30;
+
+// -----------------------------------------------------------------------------
+// Constants
+// -----------------------------------------------------------------------------
+
+export const WEEK_LIMIT: WeekLimit = 6;
+
+export const MONTH_LIMIT: MonthLimit = 30;
+
+// -----------------------------------------------------------------------------
+// Dashboard
+// -----------------------------------------------------------------------------
 
 type DashboardProps = {
   page: Page;
 };
 
 export const Dashboard = ({ page }: DashboardProps) => {
-  const [chartRange, setChartRange] = useState<ChartRange>(7);
+  const [chartRange, setChartRange] = useState<ChartRange>(WEEK_LIMIT);
 
   return (
     <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
@@ -69,20 +89,20 @@ const DashboardHeader = ({
               <Icon
                 path={mdiCalendarRange}
                 size={1}
-                color={chartRange === 7 ? colors.blue : undefined}
+                color={chartRange === WEEK_LIMIT ? colors.blue : undefined}
               />
             ),
-            clickHandler: () => setChartRange(7),
+            clickHandler: () => setChartRange(WEEK_LIMIT),
           },
           {
             label: (
               <Icon
                 path={mdiCalendarMonth}
                 size={1}
-                color={chartRange === 31 ? colors.blue : undefined}
+                color={chartRange === MONTH_LIMIT ? colors.blue : undefined}
               />
             ),
-            clickHandler: () => setChartRange(31),
+            clickHandler: () => setChartRange(MONTH_LIMIT),
           },
           {
             label: (
