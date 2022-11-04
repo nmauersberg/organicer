@@ -5,13 +5,20 @@ import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
 import { css, styled } from 'twin.macro';
-import { CustomLegend, LegendElement } from './CustomLegend';
+import {
+  CustomLegend,
+  LegendElement,
+  LegendMarker,
+  LegendText,
+} from './CustomLegend';
+import { useState } from 'react';
 
 export const HeatmapTasks = () => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
+  const [showLegend, setShowLegend] = useState(false);
 
   if (!settings) {
     return <></>;
@@ -54,6 +61,13 @@ export const HeatmapTasks = () => {
       sparkline: {
         enabled: true,
       },
+      events: {
+        mounted: () => {
+          setTimeout(() => {
+            setShowLegend(true);
+          }, 500);
+        },
+      },
     },
   };
 
@@ -78,19 +92,11 @@ export const HeatmapTasks = () => {
         }
       />
       <br />
-      <CustomLegend>
-        {[...series].map((s, i) => (
+      <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
+        {series.map((s, i) => (
           <LegendElement key={i}>
-            <span
-              className="apexcharts-legend-marker"
-              style={{
-                backgroundColor: colors[i],
-                width: '12px',
-                height: '12px',
-                borderRadius: '12px',
-              }}
-            />
-            <span className="apexcharts-legend-text">{s.name}</span>
+            <LegendMarker color={colors[i]} />
+            <LegendText>{s.name}</LegendText>
           </LegendElement>
         ))}
       </CustomLegend>

@@ -4,7 +4,13 @@ import { ApexOptions } from 'apexcharts';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
-import { CustomLegend, LegendElement } from './CustomLegend';
+import {
+  CustomLegend,
+  LegendElement,
+  LegendMarker,
+  LegendText,
+} from './CustomLegend';
+import { useState } from 'react';
 
 export const KombiChart = () => {
   const [db] = useDexieDb();
@@ -12,6 +18,7 @@ export const KombiChart = () => {
   const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
+  const [showLegend, setShowLegend] = useState(false);
 
   if (!settings) {
     return <></>;
@@ -105,7 +112,7 @@ export const KombiChart = () => {
     },
     yaxis: {
       min: 0,
-      max: max + 1,
+      max: max,
       labels: {
         show: false,
         // formatter: val => Math.round(val).toString(),
@@ -123,6 +130,13 @@ export const KombiChart = () => {
     chart: {
       toolbar: {
         show: false,
+      },
+      events: {
+        mounted: () => {
+          setTimeout(() => {
+            setShowLegend(true);
+          }, 500);
+        },
       },
     },
   };
@@ -190,19 +204,11 @@ export const KombiChart = () => {
             : (width - 20).toString()
         }
       />
-      <CustomLegend>
-        {[...series].map((s, i) => (
+      <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
+        {series.map((s, i) => (
           <LegendElement key={i}>
-            <span
-              className="apexcharts-legend-marker"
-              style={{
-                backgroundColor: colors[i],
-                width: '12px',
-                height: '12px',
-                borderRadius: '12px',
-              }}
-            />
-            <span className="apexcharts-legend-text">{s.name}</span>
+            <LegendMarker color={colors[i]} />
+            <LegendText>{s.name}</LegendText>
           </LegendElement>
         ))}
       </CustomLegend>
