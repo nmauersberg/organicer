@@ -112,7 +112,7 @@ export const KombiChart = () => {
     },
     yaxis: {
       min: 0,
-      max: max,
+      max: max + 1,
       labels: {
         show: false,
         // formatter: val => Math.round(val).toString(),
