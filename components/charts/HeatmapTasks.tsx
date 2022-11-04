@@ -4,7 +4,6 @@ import { ApexOptions } from 'apexcharts';
 import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useDexieDb } from '../../dexie/db';
-import { css, styled } from 'twin.macro';
 import {
   CustomLegend,
   LegendElement,
@@ -12,8 +11,13 @@ import {
   LegendText,
 } from './CustomLegend';
 import { useState } from 'react';
+import { compareDates, getDates, mapDates } from './util';
 
-export const HeatmapTasks = () => {
+type HeatmapTasksProps = {
+  limit?: number;
+};
+
+export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
@@ -26,7 +30,7 @@ export const HeatmapTasks = () => {
 
   const dailyDutyDates = mapDates(dailyDutyEntries);
 
-  const dates = getDates([...dailyDutyDates, new Date()]);
+  const dates = getDates([...dailyDutyDates, new Date()], limit);
 
   const getDataDailyDutiesDone = (id: string) =>
     Object.keys(dates).map(k => {
@@ -103,32 +107,3 @@ export const HeatmapTasks = () => {
     </>
   );
 };
-
-const compareDates = (date1: string | Date, date2: string | Date): boolean => {
-  return new Date(date1).toDateString() === new Date(date2).toDateString();
-};
-
-const mapDates = (el: { date: string }[]) =>
-  el.map(entry => new Date(entry.date));
-
-const getDates = (dates: Date[]) => {
-  const min = dates.reduce((a, b) => (a < b ? a : b));
-  const max = dates.reduce((a, b) => (a > b ? a : b));
-
-  return getDatesInRange(removeTime(min), removeTime(max));
-};
-
-const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const dates: { [key: string]: number } = {};
-
-  while (startDate <= endDate) {
-    dates[new Date(startDate).toDateString()] = 0;
-    startDate.setDate(startDate.getDate() + 1);
-  }
-
-  return dates;
-};
-
-function removeTime(date = new Date()) {
-  return new Date(date.toDateString());
-}

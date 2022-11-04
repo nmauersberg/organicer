@@ -11,8 +11,13 @@ import {
   LegendText,
 } from './CustomLegend';
 import { useState } from 'react';
+import { removeTime, compareDates, mapDates, getDates } from './util';
 
-export const KombiChart = () => {
+type KombiChartProps = {
+  limit?: number;
+};
+
+export const KombiChart = ({ limit }: KombiChartProps) => {
   const [db] = useDexieDb();
   const { width } = useWindowDimensions();
   const journalEntries = useLiveQuery(() => db.journal.toArray()) || [];
@@ -27,12 +32,17 @@ export const KombiChart = () => {
   const journalDates = mapDates(journalEntries);
   const dailyDutyDates = mapDates(dailyDutyEntries);
 
-  const dates = getDates([...journalDates, ...dailyDutyDates, new Date()]);
+  const dates = getDates(
+    [...journalDates, ...dailyDutyDates, new Date()],
+    limit,
+  );
 
   journalEntries.forEach(e => {
-    const entryCount = dates[new Date(e.date).toDateString()];
-    dates[new Date(e.date).toDateString()] =
-      typeof entryCount === 'number' ? entryCount + 1 : 1;
+    if (new Date(e.date).toDateString() in dates) {
+      const entryCount = dates[new Date(e.date).toDateString()];
+      dates[new Date(e.date).toDateString()] =
+        typeof entryCount === 'number' ? entryCount + 1 : 1;
+    }
   });
 
   const dataJournal = Object.keys(dates).map(k => ({
@@ -108,6 +118,7 @@ export const KombiChart = () => {
       padding: {
         left: -25,
         right: 0,
+        bottom: -10,
       },
     },
     yaxis: {
@@ -216,32 +227,3 @@ export const KombiChart = () => {
     </>
   );
 };
-
-const compareDates = (date1: string | Date, date2: string | Date): boolean => {
-  return new Date(date1).toDateString() === new Date(date2).toDateString();
-};
-
-const mapDates = (el: { date: string }[]) =>
-  el.map(entry => new Date(entry.date));
-
-const getDates = (dates: Date[]) => {
-  const min = dates.reduce((a, b) => (a < b ? a : b));
-  const max = dates.reduce((a, b) => (a > b ? a : b));
-
-  return getDatesInRange(removeTime(min), removeTime(max));
-};
-
-const getDatesInRange = (startDate: Date, endDate: Date) => {
-  const dates: { [key: string]: number } = {};
-
-  while (startDate <= endDate) {
-    dates[new Date(startDate).toDateString()] = 0;
-    startDate.setDate(startDate.getDate() + 1);
-  }
-
-  return dates;
-};
-
-function removeTime(date = new Date()) {
-  return new Date(date.toDateString());
-}
