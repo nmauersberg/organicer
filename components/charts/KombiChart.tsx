@@ -106,7 +106,7 @@ export const KombiChart = () => {
     },
     grid: {
       padding: {
-        left: -15,
+        left: -25,
         right: 0,
       },
     },
@@ -114,8 +114,9 @@ export const KombiChart = () => {
       min: 0,
       max: max + 1,
       labels: {
-        show: false,
-        // formatter: val => Math.round(val).toString(),
+        // show: false,
+        formatter: val =>
+          !(val % 2) && val > 0 ? Math.round(val).toString() : '',
       },
     },
     stroke: {
