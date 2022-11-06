@@ -34,7 +34,7 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
 
   const dates = getDates([...dailyDutyDates, new Date()], limit);
 
-  const getDataDailyDutiesDone = (id: string) =>
+  const getDutyHeatmapData = (id: string) =>
     Object.keys(dates).map(k => {
       const dde = dailyDutyEntries?.find(entry => compareDates(k, entry.date));
 
@@ -43,6 +43,10 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
         y: dde?.duties.some(d => d.done && d.id === id) ? 3 : 1,
       };
     });
+
+  // -----------------------------------------------------------------------------
+  // Apex Options
+  // -----------------------------------------------------------------------------
 
   const chartColors = [colors.orange, colors.petrol, colors.lime];
 
@@ -77,9 +81,13 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
     },
   };
 
+  // -----------------------------------------------------------------------------
+  // Apex Series
+  // -----------------------------------------------------------------------------
+
   const series = settings.dailyDuty.duties.map(d => ({
     name: d.label,
-    data: getDataDailyDutiesDone(d.id),
+    data: getDutyHeatmapData(d.id),
   }));
 
   return (

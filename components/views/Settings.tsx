@@ -47,13 +47,13 @@ export const Settings = () => {
   );
 };
 
-const SettingsElement = styled.div(() => [
+export const SettingsElement = styled.div(() => [
   css`
     margin-bottom: 3rem;
   `,
 ]);
 
-const SettingsContainer = styled.div(() => [
+export const SettingsContainer = styled.div(() => [
   css`
     height: 100%;
     width: 100%;

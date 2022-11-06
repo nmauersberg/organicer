@@ -7,11 +7,15 @@ import {
   useState,
 } from 'react';
 import toast from 'react-hot-toast';
+import { css, styled } from 'twin.macro';
 import { EncryptStorageContext } from '../../context/encryptStorage';
 import { useDexieDb } from '../../dexie/db';
 import { exportDexieDb, importDexieDb } from '../../dexie/importExport';
+import { colors } from '../../styles/colors';
 import { SlideButton } from '../button/SlideButton';
 import { SmallTitle } from '../text';
+import { Title } from '../text/index';
+import { SettingsElement } from '../views/Settings';
 
 const ImportExport = ({ back }: { back: () => void }): ReactElement => {
   const [db] = useDexieDb();
@@ -33,13 +37,17 @@ const ImportExport = ({ back }: { back: () => void }): ReactElement => {
 
   return (
     <>
-      <SmallTitle>
-        Datenbank exportieren und als Datei herunterladen:
-      </SmallTitle>
-      <SlideButton onClick={() => exportDexieDb(db)}>
-        DB Exportieren
-      </SlideButton>
+      <SettingsElement>
+        <Title>Export & Backup:</Title>
+        <SmallTitle>
+          Datenbank exportieren und als Datei herunterladen:
+        </SmallTitle>
+        <SlideButton onClick={() => exportDexieDb(db)}>
+          DB Exportieren
+        </SlideButton>
+      </SettingsElement>
 
+      <Title>Import & Restore:</Title>
       <SmallTitle>Backup hochladen:</SmallTitle>
       <input
         id="myInput"
@@ -61,6 +69,7 @@ const ImportExport = ({ back }: { back: () => void }): ReactElement => {
         <>
           <SmallTitle>Backup importieren:</SmallTitle>
           <SlideButton
+            color={colors.green}
             onClick={async () => {
               await importDexieDb(
                 db,
@@ -77,7 +86,9 @@ const ImportExport = ({ back }: { back: () => void }): ReactElement => {
       )}
       <br />
 
-      <SlideButton onClick={() => back()}>Zurück</SlideButton>
+      <SlideButton onClick={() => back()} color={colors.red}>
+        Zurück
+      </SlideButton>
     </>
   );
 };
