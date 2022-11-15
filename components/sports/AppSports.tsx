@@ -3,6 +3,7 @@ import {
   mdiCalendarArrowRight,
   mdiDotsHorizontalCircleOutline,
   mdiRotateRight,
+  mdiSigma,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast';
 import { BounceLoader } from 'react-spinners';
 import { css, styled } from 'twin.macro';
 import {
+  Exercise,
   ExerciseRound,
   ExerciseType,
   Round,
@@ -23,6 +25,7 @@ import { useEffect, useState } from 'react';
 import { SlideButton } from '../button/SlideButton';
 import Select from 'react-select';
 import { nanoid } from 'nanoid';
+import { theme } from '../../styles/theme';
 
 type Option = {
   label: string;
@@ -61,6 +64,13 @@ export const AppSports = () => {
     }
   };
 
+  const printExerciseCount = (exercise: ExerciseRound) => {
+    const label =
+      settings.sports.exercises.find(e => e.id === exercise.exerciseId)
+        ?.label || 'Übung';
+    return `${label}: ${exercise.count}`;
+  };
+
   return (
     <div>
       <Entry>
@@ -86,7 +96,7 @@ export const AppSports = () => {
                   <Icon
                     path={mdiDotsHorizontalCircleOutline}
                     size={1.5}
-                    color={'#53a2be'}
+                    color={theme.colors.blue}
                   />
                 </NoStyleButton>
               </SessionItemHead>
@@ -97,12 +107,10 @@ export const AppSports = () => {
                       <div key={entry.id}>
                         {entry.exercises.map(exercise => (
                           <h2 key={exercise.exerciseId}>
-                            <>
-                              {settings.sports.exercises.find(
-                                e => e.id === exercise.exerciseId,
-                              )?.label || 'Übung'}
-                              : {exercise.count}
-                            </>
+                            <ExerciseSummary>
+                              <Icon path={mdiSigma} size={1} />
+                              {printExerciseCount(exercise)}
+                            </ExerciseSummary>
                           </h2>
                         ))}
                       </div>
@@ -212,6 +220,14 @@ export const SessionItemHead = styled.div(() => [
   css`
     display: flex;
     gap: 1.5rem;
+  `,
+]);
+
+const ExerciseSummary = styled.div(() => [
+  css`
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
   `,
 ]);
 

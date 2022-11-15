@@ -12,8 +12,8 @@ import {
 } from './CustomLegend';
 import { useState } from 'react';
 import { removeTime, compareDates, mapDates, getDates, addHours } from './util';
-import { colors } from '../../styles/colors';
 import { ChartRange, WEEK_LIMIT } from '../views/Dashboard';
+import { theme } from '../../styles/theme';
 
 type KombiChartProps = {
   limit?: ChartRange;
@@ -54,7 +54,7 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
 
   const max = Math.max(...dataJournal.map(o => o.y));
 
-  const chartColors = [colors.red, colors.blue, colors.green];
+  const chartColors = [theme.colors.red, theme.colors.blue, theme.colors.green];
 
   const options: ApexOptions = {
     colors: chartColors,

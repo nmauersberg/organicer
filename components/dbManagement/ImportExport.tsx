@@ -11,7 +11,7 @@ import { css, styled } from 'twin.macro';
 import { EncryptStorageContext } from '../../context/encryptStorage';
 import { useDexieDb } from '../../dexie/db';
 import { exportDexieDb, importDexieDb } from '../../dexie/importExport';
-import { colors } from '../../styles/colors';
+import { theme } from '../../styles/theme';
 import { SlideButton } from '../button/SlideButton';
 import { SmallTitle } from '../text';
 import { Title } from '../text/index';
@@ -69,7 +69,7 @@ const ImportExport = ({ back }: { back: () => void }): ReactElement => {
         <>
           <SmallTitle>Backup importieren:</SmallTitle>
           <SlideButton
-            color={colors.green}
+            color={theme.colors.green}
             onClick={async () => {
               await importDexieDb(
                 db,
@@ -86,7 +86,7 @@ const ImportExport = ({ back }: { back: () => void }): ReactElement => {
       )}
       <br />
 
-      <SlideButton onClick={() => back()} color={colors.red}>
+      <SlideButton onClick={() => back()} color={theme.colors.red}>
         Zurück
       </SlideButton>
     </>

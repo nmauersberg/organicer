@@ -12,8 +12,8 @@ import {
 } from './CustomLegend';
 import { useState } from 'react';
 import { compareDates, getDates, mapDates } from './util';
-import { colors } from '../../styles/colors';
 import { ChartRange } from '../views/Dashboard';
+import { theme } from '../../styles/theme';
 
 type HeatmapTasksProps = {
   limit?: ChartRange;
@@ -48,7 +48,11 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
   // Apex Options
   // -----------------------------------------------------------------------------
 
-  const chartColors = [colors.orange, colors.petrol, colors.lime];
+  const chartColors = [
+    theme.colors.orange,
+    theme.colors.petrol,
+    theme.colors.lime,
+  ];
 
   const options: ApexOptions = {
     colors: chartColors,

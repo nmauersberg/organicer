@@ -12,7 +12,7 @@ import {
   mdiCalendarRange,
 } from '@mdi/js';
 import { css, styled } from 'twin.macro';
-import { colors } from '../../styles/colors';
+import { theme } from '../../styles/theme';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -89,7 +89,9 @@ const DashboardHeader = ({
               <Icon
                 path={mdiCalendarRange}
                 size={1}
-                color={chartRange === WEEK_LIMIT ? colors.blue : undefined}
+                color={
+                  chartRange === WEEK_LIMIT ? theme.colors.blue : undefined
+                }
               />
             ),
             clickHandler: () => setChartRange(WEEK_LIMIT),
@@ -99,7 +101,9 @@ const DashboardHeader = ({
               <Icon
                 path={mdiCalendarMonth}
                 size={1}
-                color={chartRange === MONTH_LIMIT ? colors.blue : undefined}
+                color={
+                  chartRange === MONTH_LIMIT ? theme.colors.blue : undefined
+                }
               />
             ),
             clickHandler: () => setChartRange(MONTH_LIMIT),
@@ -109,7 +113,7 @@ const DashboardHeader = ({
               <Icon
                 path={mdiAllInclusiveBoxOutline}
                 size={1}
-                color={!chartRange ? colors.blue : undefined}
+                color={!chartRange ? theme.colors.blue : undefined}
               />
             ),
             clickHandler: () => setChartRange(undefined),

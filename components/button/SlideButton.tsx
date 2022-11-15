@@ -2,7 +2,7 @@ import { ReactElement } from 'react';
 import { css, styled } from 'twin.macro';
 import Icon from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
-import { colors } from '../../styles/colors';
+import { theme } from '../../styles/theme';
 
 type SlideButtonProps = {
   children: ReactElement | ReactElement[] | string;
@@ -28,7 +28,7 @@ export const SlideButton = (props: SlideButtonProps) => {
 };
 
 const SlideButton_ = styled.button<SlideButtonProps>(
-  ({ color = colors.blue }) => [
+  ({ color = theme.colors.blue }) => [
     css`
       font-size: 20px;
       font-weight: 200;

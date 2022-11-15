@@ -14,6 +14,8 @@ import { FadeIn } from 'anima-react';
 import { SlideButton } from '../components/button/SlideButton';
 import { SmallTitle, Title } from '../components/text';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@emotion/react';
+import { theme } from '../styles/theme';
 
 type AppState = 'loading' | 'askPin' | 'initialized';
 
@@ -36,11 +38,13 @@ function MyApp(appProps: AppProps) {
 
   return (
     <CacheProvider value={cache}>
-      <GlobalStyles />
-      <Toaster />
-      <EncryptStorageProvider>
-        <InitApp appProps={appProps} />
-      </EncryptStorageProvider>
+      <ThemeProvider theme={theme}>
+        <GlobalStyles />
+        <Toaster />
+        <EncryptStorageProvider>
+          <InitApp appProps={appProps} />
+        </EncryptStorageProvider>
+      </ThemeProvider>
     </CacheProvider>
   );
 }
