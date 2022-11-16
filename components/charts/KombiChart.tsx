@@ -52,7 +52,12 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
     y: dates[k],
   }));
 
-  const max = Math.max(...dataJournal.map(o => o.y));
+  const maxJournalEntries = Math.max(...dataJournal.map(o => o.y));
+
+  const max =
+    maxJournalEntries >= settings.dailyDuty.duties.length
+      ? maxJournalEntries
+      : settings.dailyDuty.duties.length;
 
   const chartColors = [theme.colors.red, theme.colors.blue, theme.colors.green];
 

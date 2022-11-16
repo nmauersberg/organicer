@@ -83,6 +83,11 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
         },
       },
     },
+    plotOptions: {
+      heatmap: {
+        distributed: true,
+      },
+    },
   };
 
   // -----------------------------------------------------------------------------
