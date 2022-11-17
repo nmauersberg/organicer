@@ -28,7 +28,7 @@ export const AddDailyDuty = () => {
   };
 
   return (
-    <FadeIn orientation="up" duration={0.5} delay={0.25} distance={30}>
+    <>
       <SmallTitle>Eine tägliche Aufgabe hinzufügen:</SmallTitle>
       <input
         value={newDuty}
@@ -42,6 +42,6 @@ export const AddDailyDuty = () => {
       <SlideButton disabled={!newDuty} onClick={() => addDuty()}>
         Speichern
       </SlideButton>
-    </FadeIn>
+    </>
   );
 };

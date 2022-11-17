@@ -1,4 +1,4 @@
-import { FadeIn } from 'anima-react';
+import { FadeIn, mkFadeInCss } from 'anima-react';
 import { KombiChart } from '../charts/KombiChart';
 import { Page } from '../menu/MainMenu';
 import { SmallTitle } from '../text';
@@ -13,6 +13,8 @@ import {
 } from '@mdi/js';
 import { css, styled } from 'twin.macro';
 import { theme } from '../../styles/theme';
+import { getChartWidth } from '../charts/util';
+import { useWindowDimensions } from '../../hooks/useWindowDimensions';
 
 // -----------------------------------------------------------------------------
 // Types
@@ -44,7 +46,7 @@ export const Dashboard = ({ page }: DashboardProps) => {
   const [chartRange, setChartRange] = useState<ChartRange>(WEEK_LIMIT);
 
   return (
-    <FadeIn orientation="up" duration={0.5} delay={0.15} distance={30}>
+    <DashboardFrame>
       <>
         {page.description !== '' && <SmallTitle>{page.description}</SmallTitle>}
       </>
@@ -62,9 +64,28 @@ export const Dashboard = ({ page }: DashboardProps) => {
         <SmallTitle>Tagesziele in der Übersicht:</SmallTitle>
         <HeatmapTasks limit={chartRange} />
       </FadeIn>
-    </FadeIn>
+    </DashboardFrame>
   );
 };
+
+// -----------------------------------------------------------------------------
+// Dashboard Frame
+// -----------------------------------------------------------------------------
+
+const DashboardFrame = styled.div(() => {
+  const { width } = useWindowDimensions();
+  return [
+    css`
+      width: ${getChartWidth(width)}px;
+      ${mkFadeInCss({
+        orientation: 'up',
+        duration: 0.5,
+        delay: 0.15,
+        distance: 30,
+      })}
+    `,
+  ];
+});
 
 // -----------------------------------------------------------------------------
 // Dashboard Header

@@ -28,7 +28,7 @@ export const AddExercise = () => {
   };
 
   return (
-    <FadeIn orientation="up" duration={0.5} delay={0.25} distance={30}>
+    <>
       <SmallTitle>Eine neue Übung hinzufügen:</SmallTitle>
       <input
         value={newExercise}
@@ -42,6 +42,6 @@ export const AddExercise = () => {
       <SlideButton disabled={!newExercise} onClick={() => addExercise()}>
         Speichern
       </SlideButton>
-    </FadeIn>
+    </>
   );
 };

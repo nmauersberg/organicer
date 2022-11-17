@@ -11,9 +11,17 @@ import {
   LegendText,
 } from './CustomLegend';
 import { useState } from 'react';
-import { removeTime, compareDates, mapDates, getDates, addHours } from './util';
+import {
+  removeTime,
+  compareDates,
+  mapDates,
+  getDates,
+  addHours,
+  getChartWidth,
+} from './util';
 import { ChartRange, WEEK_LIMIT } from '../views/Dashboard';
 import { theme } from '../../styles/theme';
+import { mkFadeInCss } from 'anima-react';
 
 type KombiChartProps = {
   limit?: ChartRange;
@@ -159,10 +167,10 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
         show: false,
       },
       events: {
-        mounted: () => {
+        animationEnd: () => {
           setTimeout(() => {
             setShowLegend(true);
-          }, 500);
+          }, 0);
         },
       },
     },
@@ -223,17 +231,23 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
         options={options}
         series={series}
         type="line"
-        width={
-          width > 850
-            ? '800'
-            : width > 500
-            ? (width - 50).toString()
-            : (width - 20).toString()
-        }
+        width={getChartWidth(width)}
       />
       <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
         {series.map((s, i) => (
-          <LegendElement key={i}>
+          <LegendElement
+            key={i}
+            extraCss={
+              showLegend
+                ? mkFadeInCss({
+                    orientation: 'up',
+                    duration: 0.5,
+                    distance: 5,
+                    delay: 0.15 * i,
+                  })
+                : undefined
+            }
+          >
             <LegendMarker color={chartColors[i]} />
             <LegendText>{s.name}</LegendText>
           </LegendElement>

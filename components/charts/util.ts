@@ -37,3 +37,11 @@ export const addHours = (date: Date, h: number) => {
   date.setTime(date.getTime() + h * 60 * 60 * 1000);
   return date;
 };
+
+export const getChartWidth = (screenWidth: number) => {
+  return screenWidth > 850
+    ? '800'
+    : screenWidth > 500
+    ? (screenWidth - 50).toString()
+    : (screenWidth - 20).toString();
+};

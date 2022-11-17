@@ -1,3 +1,4 @@
+import { SerializedStyles } from '@emotion/react';
 import { css, styled } from 'twin.macro';
 
 export const CustomLegend = styled.div(() => [
@@ -10,14 +11,21 @@ export const CustomLegend = styled.div(() => [
   `,
 ]);
 
-export const LegendElement = styled.div(() => [
-  css`
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    justify-content: center;
-  `,
-]);
+type LegendElementProps = {
+  extraCss?: SerializedStyles;
+};
+
+export const LegendElement = styled.div<LegendElementProps>(
+  ({ extraCss = '' }) => [
+    css`
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      justify-content: center;
+      ${extraCss}
+    `,
+  ],
+);
 
 export const LegendText = styled.span(() => [
   css`

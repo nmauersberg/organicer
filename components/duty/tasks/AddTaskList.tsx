@@ -64,7 +64,7 @@ export const AddTaskList = ({ cancel }: AddTaskListProps) => {
   };
 
   return (
-    <FadeIn orientation="up" duration={0.5} delay={0.25} distance={30}>
+    <>
       <SmallTitle>Eine Todoliste anlegen:</SmallTitle>
       <Select
         isMulti={false}
@@ -106,7 +106,7 @@ export const AddTaskList = ({ cancel }: AddTaskListProps) => {
           <SlideButton onClick={() => cancel()}>Abbrechen</SlideButton>
         )}
       </ButtonRow>
-    </FadeIn>
+    </>
   );
 };
 

@@ -11,9 +11,10 @@ import {
   LegendText,
 } from './CustomLegend';
 import { useState } from 'react';
-import { compareDates, getDates, mapDates } from './util';
+import { compareDates, getChartWidth, getDates, mapDates } from './util';
 import { ChartRange } from '../views/Dashboard';
 import { theme } from '../../styles/theme';
+import { mkFadeInCss } from 'anima-react';
 
 type HeatmapTasksProps = {
   limit?: ChartRange;
@@ -76,10 +77,10 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
         enabled: true,
       },
       events: {
-        mounted: () => {
+        animationEnd: () => {
           setTimeout(() => {
             setShowLegend(true);
-          }, 500);
+          }, 0);
         },
       },
     },
@@ -106,18 +107,24 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
         series={series}
         type="heatmap"
         height={`${series.length * 15}px`}
-        width={
-          width > 850
-            ? '800'
-            : width > 500
-            ? (width - 50).toString()
-            : (width - 20).toString()
-        }
+        width={getChartWidth(width)}
       />
       <br />
       <CustomLegend style={{ visibility: showLegend ? 'visible' : 'hidden' }}>
         {series.map((s, i) => (
-          <LegendElement key={i}>
+          <LegendElement
+            key={i}
+            extraCss={
+              showLegend
+                ? mkFadeInCss({
+                    orientation: 'up',
+                    duration: 0.5,
+                    distance: 5,
+                    delay: 0.15 * i,
+                  })
+                : undefined
+            }
+          >
             <LegendMarker color={chartColors[i]} />
             <LegendText>{s.name}</LegendText>
           </LegendElement>

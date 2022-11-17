@@ -15,7 +15,7 @@
     "@emotion/styled": "^11.3.0",
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
-    "anima-react": "^0.0.7",
+    "anima-react": "^0.0.8",
     "apexcharts": "^3.35.5",
     "dexie": "^3.2.2",
     "dexie-export-import": "^1.0.3",
