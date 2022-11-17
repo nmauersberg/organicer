@@ -195,7 +195,7 @@ export const AppSports = () => {
                       });
                       if (modSession.id) {
                         updateSession(modSession);
-                        setShowAddRound(false);
+                        // setShowAddRound(false);
                       }
                     }}
                   >
