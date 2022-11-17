@@ -64,12 +64,11 @@ export const AppSports = () => {
     }
   };
 
-  const printExerciseCount = (exercise: ExerciseRound) => {
-    const label =
-      settings.sports.exercises.find(e => e.id === exercise.exerciseId)
-        ?.label || 'Übung';
-    return `${label}: ${exercise.count}`;
-  };
+  const printExerciseCount = (exerciseId: string, count: number) =>
+    `${printExerciseLabel(exerciseId)}: ${count}`;
+
+  const printExerciseLabel = (exerciseId: string) =>
+    settings.sports.exercises.find(e => e.id === exerciseId)?.label || 'Übung';
 
   return (
     <div>
@@ -102,24 +101,63 @@ export const AppSports = () => {
               </SessionItemHead>
               {entries.length > 0 && (
                 <SessionItemBody>
-                  <Rounds>
-                    {session.rounds.map(entry => (
-                      <div key={entry.id}>
-                        {entry.exercises.map(exercise => (
-                          <h2 key={exercise.exerciseId}>
-                            <ExerciseSummary>
-                              <Icon path={mdiSigma} size={1} />
-                              {printExerciseCount(exercise)}
-                            </ExerciseSummary>
-                          </h2>
-                        ))}
-                      </div>
-                    ))}
-                  </Rounds>
+                  <Exercises>
+                    {sumExercises(session.rounds).map(sum => {
+                      return (
+                        <h2 key={sum.exerciseId}>
+                          <ExerciseSummary>
+                            <Icon path={mdiSigma} size={1} />
+                            {printExerciseCount(sum.exerciseId, sum.sum)}
+                          </ExerciseSummary>
+                        </h2>
+                      );
+                    })}
+                  </Exercises>
                 </SessionItemBody>
               )}
               {showAddRound && (
                 <SessionItemEdit>
+                  {entries.length > 0 && (
+                    <SessionItemBody>
+                      <SmallTitle>Deine Runden:</SmallTitle>
+                      <Rounds>
+                        {session.rounds.map((entry, rIndex) => (
+                          <Exercises key={entry.id}>
+                            <IconAndNumber>
+                              <Icon path={mdiRotateRight} size={1} />
+                              <p
+                                style={{
+                                  textAlign: 'center',
+                                  padding: 0,
+                                  margin: 0,
+                                }}
+                              >
+                                <b>{rIndex + 1}</b>
+                              </p>
+                            </IconAndNumber>
+                            {entry.exercises.map((exercise, eIndex) => (
+                              <h2 key={exercise.exerciseId}>
+                                <ExerciseSummary>
+                                  {printExerciseLabel(exercise.exerciseId)}
+                                  <InputNumber
+                                    value={exercise.count}
+                                    update={(value: number) => {
+                                      const newSession = { ...session };
+                                      newSession.rounds[rIndex].exercises[
+                                        eIndex
+                                      ].count = value;
+                                      updateSession(newSession);
+                                    }}
+                                  />
+                                </ExerciseSummary>
+                              </h2>
+                            ))}
+                          </Exercises>
+                        ))}
+                      </Rounds>
+                    </SessionItemBody>
+                  )}
+
                   <SmallTitle>Eine neue Runde anlegen:</SmallTitle>
                   <Select
                     isMulti
@@ -173,6 +211,29 @@ export const AppSports = () => {
   );
 };
 
+const sumExercises = (
+  rounds: Round[],
+): {
+  exerciseId: string;
+  sum: number;
+}[] => {
+  const ids = rounds.reduce((acc, curr) => {
+    curr.exercises.forEach(exercise => acc.push(exercise.exerciseId));
+    return [...new Set(acc)];
+  }, [] as string[]);
+  return ids.map(id => ({
+    exerciseId: id,
+    sum: rounds.reduce((acc, curr) => {
+      curr.exercises.forEach(exercise => {
+        if (exercise.exerciseId === id) {
+          acc = acc + exercise.count;
+        }
+      });
+      return acc;
+    }, 0),
+  }));
+};
+
 const mkRound = (
   id: string,
   count: number,
@@ -201,10 +262,56 @@ const LabledIcon = ({ iconPath, label }: LabledIconProps) => {
   );
 };
 
+type InputNumberProps = {
+  value: number;
+  update: (value: number) => void;
+};
+
+const InputNumber = ({ value, update }: InputNumberProps) => {
+  const [inputValue, setInputValue] = useState(value);
+
+  return (
+    <Input
+      value={inputValue}
+      type="number"
+      onChange={e => {
+        const parsedVal = parseInt(e.target.value);
+        const newVal = parsedVal && parsedVal >= 0 ? parsedVal : 0;
+        setInputValue(newVal);
+        update(newVal);
+      }}
+    />
+  );
+};
+
+const Input = styled.input(() => [
+  css`
+    max-width: 5rem;
+    padding: 0 0.25rem;
+  `,
+]);
+
 export const Entry = styled.div(() => [
   css`
     margin: 0.5rem 0.25rem 0.5rem 0;
     white-space: pre-wrap;
+  `,
+]);
+
+export const Exercises = styled.div(() => [
+  css`
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  `,
+]);
+
+export const IconAndNumber = styled.div(() => [
+  css`
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+    min-width: 2.5rem;
   `,
 ]);
 
@@ -213,6 +320,7 @@ export const Rounds = styled.div(() => [
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    margin-bottom: 1rem;
   `,
 ]);
 
