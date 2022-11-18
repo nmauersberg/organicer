@@ -101,7 +101,7 @@ export const Session = ({ session, settings }: SessionProps) => {
       </SessionItemHead>
       {session.rounds.length > 0 && (
         <SessionItemBody>
-          <Exercises>
+          <ExercisesSummary>
             {sumExercises(session.rounds).map(sum => {
               return (
                 <h2 key={sum.exerciseId}>
@@ -112,7 +112,7 @@ export const Session = ({ session, settings }: SessionProps) => {
                 </h2>
               );
             })}
-          </Exercises>
+          </ExercisesSummary>
         </SessionItemBody>
       )}
       {showAddRound && (
@@ -326,6 +326,15 @@ const Exercises = styled.div(() => [
     gap: 0.5rem;
     align-items: center;
     flex-wrap: nowrap;
+  `,
+]);
+
+const ExercisesSummary = styled.div(() => [
+  css`
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
   `,
 ]);
 
