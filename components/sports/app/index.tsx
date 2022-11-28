@@ -8,10 +8,10 @@ import { Center, Session } from './Session';
 
 export const AppSports = () => {
   const [db] = useDexieDb();
+  const settings = useLiveQuery(() => db.userSettings.get(1));
   const entries = useLiveQuery(() =>
     db.sports.toArray().then(entries => entries.reverse()),
   );
-  const settings = useLiveQuery(() => db.userSettings.get(1));
 
   if (!settings || !entries) {
     return (

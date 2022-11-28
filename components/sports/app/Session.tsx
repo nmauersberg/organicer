@@ -83,7 +83,6 @@ export const Session = ({ session, settings }: SessionProps) => {
           iconPath={mdiArrowRightDropCircleOutline}
           label={new Date(session.date).toLocaleDateString('de-DE')}
         />
-
         <LabledIcon
           iconPath={mdiRotateRight}
           label={session.rounds.length.toString()}
@@ -99,22 +98,22 @@ export const Session = ({ session, settings }: SessionProps) => {
           />
         </NoStyleButton>
       </SessionItemHead>
+
       {session.rounds.length > 0 && (
         <SessionItemBody>
           <ExercisesSummary>
-            {sumExercises(session.rounds).map(sum => {
-              return (
-                <h2 key={sum.exerciseId}>
-                  <ExerciseSummary>
-                    <Icon path={mdiSigma} size={1} />
-                    {printExercise(sum.exerciseId, sum.sum)}
-                  </ExerciseSummary>
-                </h2>
-              );
-            })}
+            {sumExercises(session.rounds).map(sum => (
+              <h2 key={sum.exerciseId}>
+                <ExerciseSummary>
+                  <Icon path={mdiSigma} size={1} />
+                  {printExercise(sum.exerciseId, sum.sum)}
+                </ExerciseSummary>
+              </h2>
+            ))}
           </ExercisesSummary>
         </SessionItemBody>
       )}
+
       {showAddRound && (
         <SessionItemEdit>
           {session.rounds.length > 0 && (
