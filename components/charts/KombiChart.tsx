@@ -10,7 +10,7 @@ import {
   LegendMarker,
   LegendText,
 } from './CustomLegend';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   removeTime,
   compareDates,
@@ -34,6 +34,12 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
   const [showLegend, setShowLegend] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLegend(true);
+    }, 1500);
+  });
 
   if (!settings) {
     return <></>;
@@ -167,11 +173,14 @@ export const KombiChart = ({ limit }: KombiChartProps) => {
         show: false,
       },
       events: {
-        animationEnd: () => {
+        animationEnd: () =>
           setTimeout(() => {
             setShowLegend(true);
-          }, 0);
-        },
+          }, 25),
+      },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
       },
     },
   };

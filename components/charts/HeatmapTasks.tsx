@@ -10,7 +10,7 @@ import {
   LegendMarker,
   LegendText,
 } from './CustomLegend';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { compareDates, getChartWidth, getDates, mapDates } from './util';
 import { ChartRange } from '../views/Dashboard';
 import { theme } from '../../styles/theme';
@@ -26,6 +26,12 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
   const dailyDutyEntries = useLiveQuery(() => db.dailyDuty.toArray()) || [];
   const settings = useLiveQuery(() => db.userSettings.get(1));
   const [showLegend, setShowLegend] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowLegend(true);
+    }, 1500);
+  });
 
   if (!settings) {
     return <></>;
@@ -77,11 +83,14 @@ export const HeatmapTasks = ({ limit }: HeatmapTasksProps) => {
         enabled: true,
       },
       events: {
-        animationEnd: () => {
+        animationEnd: () =>
           setTimeout(() => {
             setShowLegend(true);
-          }, 0);
-        },
+          }, 25),
+      },
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
       },
     },
     plotOptions: {
