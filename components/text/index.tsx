@@ -8,13 +8,22 @@ export const Title = styled.h2(() => [
   `,
 ]);
 
-export const SmallTitle = styled.h3(() => [
-  css`
-    font-weight: 400;
-    font-size: 1.25rem;
-    margin: 0.5rem 0;
-  `,
-]);
+type SmallTitleProps = {
+  mt?: number;
+  mb?: number;
+  ml?: number;
+  mr?: number;
+};
+
+export const SmallTitle = styled.h3<SmallTitleProps>(
+  ({ mt = '0.5', mb = '0.5', ml = '0', mr = '0' }) => [
+    css`
+      font-weight: 400;
+      font-size: 1.25rem;
+      margin: ${mt}rem ${mr}rem ${mb}rem ${ml}rem;
+    `,
+  ],
+);
 
 export const DateText = styled.p(() => [
   css`

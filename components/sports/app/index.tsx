@@ -23,8 +23,8 @@ export const AppSports = () => {
 
   return (
     <Frame>
-      <SmallTitle>Deine Sessions</SmallTitle>
-      <br />
+      <SmallTitle mb={1}>Deine Sessions</SmallTitle>
+
       {entries.map(session => (
         <Session key={session.id} session={session} settings={settings} />
       ))}
