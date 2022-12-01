@@ -41,7 +41,9 @@ export const Session = ({ session, settings }: SessionProps) => {
   const [db] = useDexieDb();
 
   const [showAddRound, setShowAddRound] = useState<boolean>(false);
+  const [showEditRound, setShowEditRound] = useState<boolean>(false);
   const [newRoundExercises, setNewRoundExercises] = useState<Option[]>([]);
+  const [editExercises, setEditExercises] = useState<Option[]>([]);
 
   const { width } = useWindowDimensions();
   const narrowView = width < 500 ? true : false;
@@ -124,39 +126,103 @@ export const Session = ({ session, settings }: SessionProps) => {
               <SmallTitle>Deine Runden:</SmallTitle>
               <Rounds>
                 {session.rounds.map((entry, rIndex) => (
-                  <Exercises key={entry.id}>
-                    <IconAndNumber>
-                      <Icon path={mdiRotateRight} size={1} />
-                      <p
-                        style={{
-                          textAlign: 'center',
-                          padding: 0,
-                          margin: 0,
+                  <>
+                    <Exercises key={entry.id}>
+                      <IconAndNumber>
+                        <Icon path={mdiRotateRight} size={1} />
+                        <p
+                          style={{
+                            textAlign: 'center',
+                            padding: 0,
+                            margin: 0,
+                          }}
+                        >
+                          <b>{rIndex + 1}</b>
+                        </p>
+                      </IconAndNumber>
+
+                      <ExercisesContainer narrowView={narrowView}>
+                        {entry.exercises.map((exercise, eIndex) => (
+                          <h2 key={exercise.exerciseId}>
+                            <ExerciseSummary narrowView={narrowView}>
+                              {printExerciseLabel(exercise.exerciseId)}
+                              <InputNumber
+                                value={exercise.count}
+                                update={(value: number) => {
+                                  const newSession = { ...session };
+                                  newSession.rounds[rIndex].exercises[
+                                    eIndex
+                                  ].count = value;
+                                  updateSession(newSession);
+                                }}
+                              />
+                            </ExerciseSummary>
+                          </h2>
+                        ))}
+                      </ExercisesContainer>
+
+                      <Spacer />
+
+                      <NoStyleButton
+                        onClick={() => {
+                          setShowEditRound(!showEditRound);
                         }}
                       >
-                        <b>{rIndex + 1}</b>
-                      </p>
-                    </IconAndNumber>
-                    <ExercisesContainer narrowView={narrowView}>
-                      {entry.exercises.map((exercise, eIndex) => (
-                        <h2 key={exercise.exerciseId}>
-                          <ExerciseSummary narrowView={narrowView}>
-                            {printExerciseLabel(exercise.exerciseId)}
-                            <InputNumber
-                              value={exercise.count}
-                              update={(value: number) => {
-                                const newSession = { ...session };
-                                newSession.rounds[rIndex].exercises[
-                                  eIndex
-                                ].count = value;
-                                updateSession(newSession);
-                              }}
-                            />
-                          </ExerciseSummary>
-                        </h2>
-                      ))}
-                    </ExercisesContainer>
-                  </Exercises>
+                        <Icon
+                          path={mdiDotsHorizontalCircleOutline}
+                          size={1}
+                          color={theme.colors.blue}
+                        />
+                      </NoStyleButton>
+                    </Exercises>
+                    {showEditRound && (
+                      <>
+                        <SmallTitle>Runde bearbeiten:</SmallTitle>
+                        <Select
+                          isMulti
+                          closeMenuOnSelect={
+                            editExercises.length === 1 ? true : false
+                          }
+                          onChange={e => {
+                            if (!e) {
+                              setEditExercises([]);
+                            } else {
+                              setEditExercises(e as Option[]);
+                            }
+                          }}
+                          options={options}
+                          placeholder={'Übungen auswählen...'}
+                          styles={{
+                            control: provided => ({
+                              ...provided,
+                              border: '1px solid black',
+                              '&:hover': {
+                                border: '1px solid black',
+                              },
+                            }),
+                          }}
+                        />
+                        <SlideButton
+                          disabled={editExercises.length === 0}
+                          onClick={() => {
+                            // const modSession = { ...session };
+                            // modSession.rounds.push({
+                            //   id: nanoid(),
+                            //   exercises: editExercises.map(e =>
+                            //     mkRound(e.value, 0, 'count'),
+                            //   ),
+                            // });
+                            // if (modSession.id) {
+                            //   updateSession(modSession);
+                            //   // setShowAddRound(false);
+                            // }
+                          }}
+                        >
+                          Speichern
+                        </SlideButton>
+                      </>
+                    )}
+                  </>
                 ))}
               </Rounds>
             </SessionItemBody>
@@ -347,8 +413,9 @@ type ExercisesContainerProps = {
 const ExercisesContainer = styled.div<ExercisesContainerProps>(
   ({ narrowView }) => [
     css`
-      display: ${narrowView ? 'block' : 'flex'};
-      gap: 0.35rem 1.5rem;
+      display: flex;
+      flex-direction: ${narrowView ? 'column' : 'row'};
+      gap: 0.3rem 1.5rem;
       flex-wrap: wrap;
       ${narrowView ? `justify-content: space-between; width: 100%;` : ''}
     `,
@@ -368,7 +435,7 @@ const Rounds = styled.div(() => [
   css`
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     margin-bottom: 1rem;
   `,
 ]);
@@ -380,7 +447,7 @@ type ExerciseSummaryProps = {
 const ExerciseSummary = styled.div<ExerciseSummaryProps>(({ narrowView }) => [
   css`
     display: flex;
-    gap: 0.5rem;
+    gap: 0.5rem 0.5rem;
     align-items: center;
     flex-wrap: nowrap;
     ${narrowView ? `justify-content: space-between;` : ''}
