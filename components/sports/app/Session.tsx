@@ -43,6 +43,9 @@ export const Session = ({ session, settings }: SessionProps) => {
   const [showAddRound, setShowAddRound] = useState<boolean>(false);
   const [newRoundExercises, setNewRoundExercises] = useState<Option[]>([]);
 
+  const { width } = useWindowDimensions();
+  const narrowView = width < 500 ? true : false;
+
   useEffect(() => {
     setNewRoundExercises([]);
   }, [showAddRound]);
@@ -134,10 +137,10 @@ export const Session = ({ session, settings }: SessionProps) => {
                         <b>{rIndex + 1}</b>
                       </p>
                     </IconAndNumber>
-                    <ExercisesContainer>
+                    <ExercisesContainer narrowView={narrowView}>
                       {entry.exercises.map((exercise, eIndex) => (
                         <h2 key={exercise.exerciseId}>
-                          <ExerciseSummary>
+                          <ExerciseSummary narrowView={narrowView}>
                             {printExerciseLabel(exercise.exerciseId)}
                             <InputNumber
                               value={exercise.count}
@@ -337,13 +340,20 @@ const ExercisesSummary = styled.div(() => [
   `,
 ]);
 
-const ExercisesContainer = styled.div(() => [
-  css`
-    display: flex;
-    gap: 0.3rem;
-    flex-wrap: wrap;
-  `,
-]);
+type ExercisesContainerProps = {
+  narrowView?: boolean;
+};
+
+const ExercisesContainer = styled.div<ExercisesContainerProps>(
+  ({ narrowView }) => [
+    css`
+      display: ${narrowView ? 'block' : 'flex'};
+      gap: 0.35rem 1.5rem;
+      flex-wrap: wrap;
+      ${narrowView ? `justify-content: space-between; width: 100%;` : ''}
+    `,
+  ],
+);
 
 const IconAndNumber = styled.div(() => [
   css`
@@ -363,11 +373,16 @@ const Rounds = styled.div(() => [
   `,
 ]);
 
-const ExerciseSummary = styled.div(() => [
+type ExerciseSummaryProps = {
+  narrowView?: boolean;
+};
+
+const ExerciseSummary = styled.div<ExerciseSummaryProps>(({ narrowView }) => [
   css`
     display: flex;
-    gap: 0.25rem;
+    gap: 0.5rem;
     align-items: center;
     flex-wrap: nowrap;
+    ${narrowView ? `justify-content: space-between;` : ''}
   `,
 ]);
