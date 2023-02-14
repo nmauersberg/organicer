@@ -46,6 +46,10 @@ const Home = ({ slug }: PageProps) => {
       <Head>
         <title>OrgaNicer</title>
         <meta name="description" content="Orga your life Nicer" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content"
+         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
